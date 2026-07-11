@@ -2,7 +2,9 @@
 
 # Fontsequal
 
-### A local-first desktop font manager for designers, developers, and brand teams.
+### A local-first desktop font manager for focused type work.
+
+Search, inspect, compare, and manage the font families your work depends on—without handing control of your library to a cloud service.
 
 [![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -10,46 +12,54 @@
 ![Bun](https://img.shields.io/badge/Bun-runtime-black)
 ![Platforms](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-7C3AED)
 
-<!-- Replace with an exported product screenshot or GIF before first release. -->
-![Fontsequal desktop app placeholder](docs/images/fontsequal-preview-placeholder.svg)
+<br />
+
+![Fontsequal desktop workspace](docs/images/fontsequal-preview-placeholder.svg)
+
+<br />
+
+**[Features](#a-calm-font-workspace)** · **[Quick start](#quick-start)** · **[Safety](#local-by-design)** · **[Contributing](CONTRIBUTING.md)**
 
 </div>
 
-> **Pre-release project.** No GitHub releases are published yet. Build from source while v0.1.0 is prepared.
+> **Pre-release:** Fontsequal is in active development. Build from source while v0.1.0 is prepared.
 
-## Features
+## A calm font workspace
 
-| Browse and preview | Local library | Safe management |
+Fontsequal is arranged like a focused desktop editor: navigation on the left, a specimen-first library in the middle, and contextual details on the right.
+
+| Browse | Inspect | Compare |
 | --- | --- | --- |
-| Global search, compact filters, grid/list browse | Scan TTF/OTF metadata and hashes | User-scope managed installs only |
-| Right-side inspector and full-screen font viewer | Detect duplicate files | Managed-only uninstall protection |
-| Google Fonts cache and real provider data | Import local font copies | Linux Fontconfig cache refresh |
-| Favorites, collections, and dedicated comparison workspace | Filter system, external, and managed fonts | SQLite-backed local settings |
+| Search real provider data, filter families, and switch between grid and list views. | Select a family to open a right-side inspector, then expand into a focused full-font viewer. | Use the dedicated Compare page to place two to four families side by side. |
 
-## Desktop workflow
+| Organize | Manage | Stay in flow |
+| --- | --- | --- |
+| Keep favorites and project collections close to the font library. | Scan local metadata, find duplicates, import copies, and safely manage user-scope fonts. | Collapse the sidebar into an icon rail when the specimen needs more room. |
 
-Fontsequal uses a compact desktop-editor layout designed around the font specimen:
+### Keyboard workflow
 
-- Browse, Installed, Favorites, Collections, Compare, duplicate detection, and Settings live in the sidebar.
-- Select a font to open its contextual inspector on the right; use the expand action for a focused full-font viewer.
-- Use the Compare page to place two to four families side by side.
-- Collapse the sidebar into an icon rail when more workspace is needed.
-- Use `Ctrl/Cmd + K` to focus font search, arrow keys to change selection, `Enter` for the inspector, and `Space` for the full viewer.
+| Shortcut | Action |
+| --- | --- |
+| `Ctrl/Cmd + K` | Focus font search |
+| Arrow keys | Move the selected family |
+| `Enter` | Open or focus the inspector |
+| `Space` | Open the full-font viewer |
+| `Esc` | Close menus, sheets, and dialogs |
 
-The browser-only Vite preview does not provide Tauri's local command bridge. Browse, installed-font, collection, and provider results are populated by the desktop app (`bun run tauri:dev`); Fontsequal intentionally does not show mock font data.
-
-## Safety first
+## Local by design
 
 Fontsequal is built around ownership boundaries.
 
-- It installs only into Fontsequal-managed **user** font folders.
-- System-wide font installation is **not included in the MVP**.
-- It copies imported fonts; it never moves original files.
-- Fontsequal only uninstalls fonts it manages.
-- System and external fonts are read-only in Fontsequal.
-- Data stays local. Cloud sync is planned for a later release.
+- Managed installs use the current user's Fontsequal directory only.
+- System-wide installation is not included in the MVP.
+- Imports copy valid font files; original files remain untouched.
+- Only fonts managed by Fontsequal can be uninstalled by Fontsequal.
+- System and external fonts are shown as read-only.
+- Your font data and preferences stay local. Cloud sync is planned as an explicit opt-in feature.
 
 ## Quick start
+
+### Desktop app
 
 Arch Linux example:
 
@@ -63,22 +73,24 @@ bun install
 bun run tauri:dev
 ```
 
-For a frontend-only layout preview, run:
+Managed font copies live at:
+
+| Platform | Managed directory |
+| --- | --- |
+| Linux | `~/.local/share/fonts/fontsequal` |
+| Windows | `%LOCALAPPDATA%\Fontsequal\fonts` |
+
+### Browser layout preview
 
 ```bash
 bun run dev
 ```
 
-This serves the UI but cannot scan or manage local fonts because those operations are provided by Tauri.
-
-Managed fonts live at:
-
-- Linux: `~/.local/share/fonts/fontsequal`
-- Windows: `%LOCALAPPDATA%\Fontsequal\fonts`
+The Vite preview is useful for layout work, but it does not have Tauri's local command bridge. Run `bun run tauri:dev` to scan, import, install, or browse real local/provider data. Fontsequal intentionally does not substitute mock font records.
 
 ## Build from source
 
-Requirements: Bun, Rust stable, and Tauri platform dependencies.
+Requirements: Bun, Rust stable, and the Tauri platform dependencies for your OS.
 
 ```bash
 bun install
@@ -95,23 +107,23 @@ bun run tauri:build
 | Local-first library | Yes | Partial | Usually no |
 | Safe managed uninstall | Yes | Manual and risky | Varies |
 | System font protection | Yes | No ownership context | Varies |
-| Typography comparison tools | Yes | No | Varies |
-| Cloud sync | Planned | No | Usually yes |
+| Focused specimen and comparison tools | Yes | No | Varies |
+| Cloud sync | Planned, opt-in | No | Usually yes |
 
 ## Roadmap
 
 - [x] Local scanning, import, managed install, and safe uninstall
-- [x] Google Fonts cache, previews, favorites, collections, and settings
-- [x] Contextual font inspector, focused full viewer, and multi-font comparison page
+- [x] Google Fonts cache, favorites, collections, duplicate detection, and settings
+- [x] Contextual font inspector, full viewer, and multi-font comparison page
 - [x] Responsive material desktop UI with collapsible icon sidebar
 - [x] Windows and Linux build targets
 - [ ] Published installers and signed release artifacts
 - [ ] Provider-neutral unified font index
-- [ ] Optional cloud sync, with explicit opt-in
+- [ ] Optional cloud sync with explicit opt-in
 
 ## Contributing
 
-Contributions welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Use Bun only for frontend tooling and keep all font operations local and user-scoped.
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Use Bun for frontend tooling and keep all font operations local and user-scoped.
 
 ## Security
 

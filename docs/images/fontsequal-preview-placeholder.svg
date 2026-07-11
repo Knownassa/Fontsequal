@@ -1,1 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700"><rect width="1200" height="700" fill="#0b0c12"/><rect x="70" y="55" width="1060" height="590" rx="24" fill="#171820" stroke="#393b4a"/><text x="130" y="175" fill="#f7f5ff" font-family="sans-serif" font-size="48" font-weight="700">Fontsequal preview</text><text x="130" y="228" fill="#a8aaba" font-family="sans-serif" font-size="24">Screenshot or GIF placeholder — replace before first published release.</text><rect x="130" y="290" width="600" height="230" rx="18" fill="#222331"/><text x="170" y="420" fill="#ffffff" font-family="serif" font-size="72">Aa Bb Cc</text><rect x="765" y="290" width="300" height="60" rx="30" fill="#7c3cff"/><rect x="765" y="375" width="240" height="30" rx="15" fill="#3a3b48"/><rect x="765" y="425" width="270" height="30" rx="15" fill="#3a3b48"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-label="Fontsequal desktop workspace illustration">
+  <defs>
+    <linearGradient id="window" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1a1a1c"/><stop offset="1" stop-color="#101011"/></linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffffff" stop-opacity=".09"/><stop offset="1" stop-color="#ffffff" stop-opacity=".035"/></linearGradient>
+    <radialGradient id="specimen" cx="18%" cy="8%" r="90%"><stop stop-color="#ffffff" stop-opacity=".12"/><stop offset=".55" stop-color="#ffffff" stop-opacity=".035"/><stop offset="1" stop-color="#ffffff" stop-opacity=".02"/></radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="20" flood-color="#000" flood-opacity=".35"/></filter>
+  </defs>
+  <rect width="1200" height="700" fill="#0b0b0c"/>
+  <rect x="52" y="44" width="1096" height="612" rx="22" fill="url(#window)" stroke="#ffffff" stroke-opacity=".11" filter="url(#shadow)"/>
+  <path d="M52 92h1096" stroke="#ffffff" stroke-opacity=".08"/>
+  <rect x="70" y="60" width="22" height="16" rx="6" fill="#ffffff" fill-opacity=".1"/>
+  <text x="104" y="73" fill="#f5f5f7" font-family="Inter,Arial,sans-serif" font-size="14" font-weight="700">Fontsequal</text>
+  <text x="186" y="73" fill="#747479" font-family="Inter,Arial,sans-serif" font-size="12">/ Browse</text>
+  <rect x="448" y="57" width="304" height="22" rx="8" fill="#ffffff" fill-opacity=".075" stroke="#ffffff" stroke-opacity=".08"/>
+  <circle cx="464" cy="68" r="4" fill="none" stroke="#a7a7ab" stroke-width="1.5"/><path d="m467 71 3 3" stroke="#a7a7ab" stroke-width="1.5"/>
+  <text x="478" y="72" fill="#747479" font-family="Inter,Arial,sans-serif" font-size="10">Search fonts</text>
+  <rect x="1084" y="58" width="44" height="20" rx="8" fill="#ffffff" fill-opacity=".09"/>
+  <path d="M286 92v564M916 92v564" stroke="#ffffff" stroke-opacity=".08"/>
+  <rect x="52" y="92" width="234" height="564" fill="#161618" fill-opacity=".82"/>
+  <rect x="70" y="112" width="32" height="32" rx="11" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".1"/>
+  <text x="82" y="133" fill="#f5f5f7" font-family="Georgia,serif" font-size="16" font-weight="700">F</text>
+  <text x="70" y="173" fill="#747479" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1.2">LIBRARY</text>
+  <rect x="63" y="184" width="212" height="32" rx="9" fill="#8b7cff" fill-opacity=".18" stroke="#8b7cff" stroke-opacity=".5"/>
+  <circle cx="81" cy="200" r="5" fill="#c5bdff"/><text x="96" y="204" fill="#f5f5f7" font-family="Inter,Arial,sans-serif" font-size="12" font-weight="600">Browse</text>
+  <text x="96" y="238" fill="#a7a7ab" font-family="Inter,Arial,sans-serif" font-size="12">Installed</text>
+  <text x="96" y="272" fill="#a7a7ab" font-family="Inter,Arial,sans-serif" font-size="12">Favorites</text>
+  <text x="70" y="318" fill="#747479" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1.2">COLLECTIONS</text>
+  <text x="82" y="349" fill="#a7a7ab" font-family="Inter,Arial,sans-serif" font-size="12">Brand refresh</text>
+  <text x="82" y="381" fill="#a7a7ab" font-family="Inter,Arial,sans-serif" font-size="12">Editorial</text>
+  <text x="70" y="605" fill="#a7a7ab" font-family="Inter,Arial,sans-serif" font-size="11">Settings</text>
+  <rect x="305" y="112" width="592" height="42" rx="14" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".08"/>
+  <text x="324" y="138" fill="#a7a7ab" font-family="Inter,Arial,sans-serif" font-size="11">A calmer way to shape ideas.</text>
+  <rect x="668" y="122" width="43" height="20" rx="8" fill="#ffffff" fill-opacity=".07"/><text x="679" y="136" fill="#a7a7ab" font-family="Inter,Arial,sans-serif" font-size="10">56 px</text>
+  <rect x="719" y="122" width="47" height="20" rx="8" fill="#ffffff" fill-opacity=".07"/><text x="733" y="136" fill="#a7a7ab" font-family="Inter,Arial,sans-serif" font-size="10">400</text>
+  <text x="307" y="176" fill="#747479" font-family="Inter,Arial,sans-serif" font-size="10">1,542 families</text>
+  <text x="818" y="176" fill="#747479" font-family="Inter,Arial,sans-serif" font-size="10">Updated today</text>
+  <g font-family="Inter,Arial,sans-serif">
+    <rect x="305" y="190" width="282" height="190" rx="16" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".09"/>
+    <rect x="319" y="204" width="254" height="124" rx="12" fill="url(#specimen)" stroke="#ffffff" stroke-opacity=".07"/>
+    <text x="336" y="272" fill="#f5f5f7" font-family="Georgia,serif" font-size="34">Aa Bb Cc</text><text x="320" y="353" fill="#f5f5f7" font-size="13" font-weight="700">Inter</text><text x="320" y="371" fill="#a7a7ab" font-size="10">Sans · 18 styles · Installed</text>
+    <rect x="602" y="190" width="282" height="190" rx="16" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".09"/>
+    <rect x="616" y="204" width="254" height="124" rx="12" fill="url(#specimen)" stroke="#ffffff" stroke-opacity=".07"/>
+    <text x="632" y="272" fill="#f5f5f7" font-family="Georgia,serif" font-size="34">Northstar</text><text x="616" y="353" fill="#f5f5f7" font-size="13" font-weight="700">DM Sans</text><text x="616" y="371" fill="#a7a7ab" font-size="10">Sans · 14 styles</text>
+    <rect x="305" y="399" width="282" height="190" rx="16" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".09"/>
+    <rect x="319" y="413" width="254" height="124" rx="12" fill="url(#specimen)" stroke="#ffffff" stroke-opacity=".07"/>
+    <text x="336" y="481" fill="#f5f5f7" font-family="Georgia,serif" font-size="34">Typography</text><text x="320" y="562" fill="#f5f5f7" font-size="13" font-weight="700">Fraunces</text><text x="320" y="580" fill="#a7a7ab" font-size="10">Serif · 16 styles</text>
+    <rect x="602" y="399" width="282" height="190" rx="16" fill="url(#panel)" stroke="#8b7cff" stroke-opacity=".6"/>
+    <rect x="616" y="413" width="254" height="124" rx="12" fill="url(#specimen)" stroke="#ffffff" stroke-opacity=".07"/>
+    <text x="632" y="481" fill="#f5f5f7" font-family="Georgia,serif" font-size="34">Good type</text><text x="616" y="562" fill="#f5f5f7" font-size="13" font-weight="700">Space Grotesk</text><text x="616" y="580" fill="#a7a7ab" font-size="10">Sans · 12 styles</text>
+  </g>
+  <rect x="916" y="92" width="232" height="564" fill="#141416" fill-opacity=".86"/>
+  <text x="936" y="124" fill="#747479" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1.2">SELECTED FAMILY</text>
+  <text x="936" y="153" fill="#f5f5f7" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="700">Space Grotesk</text>
+  <text x="936" y="171" fill="#a7a7ab" font-family="Inter,Arial,sans-serif" font-size="10">Sans · 12 styles</text>
+  <rect x="936" y="190" width="192" height="112" rx="12" fill="url(#specimen)" stroke="#ffffff" stroke-opacity=".08"/>
+  <text x="950" y="252" fill="#f5f5f7" font-family="Georgia,serif" font-size="27">Good type</text>
+  <rect x="936" y="321" width="192" height="94" rx="14" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".08"/>
+  <text x="950" y="342" fill="#747479" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1">VARIANTS</text>
+  <rect x="950" y="358" width="30" height="22" rx="7" fill="#ffffff" fill-opacity=".08"/><rect x="986" y="358" width="30" height="22" rx="7" fill="#ffffff" fill-opacity=".08"/><rect x="1022" y="358" width="30" height="22" rx="7" fill="#ffffff" fill-opacity=".08"/>
+  <rect x="936" y="434" width="192" height="86" rx="14" fill="url(#panel)" stroke="#ffffff" stroke-opacity=".08"/>
+  <text x="950" y="455" fill="#747479" font-family="Inter,Arial,sans-serif" font-size="9" font-weight="700" letter-spacing="1">INSTALLATION</text>
+  <rect x="950" y="472" width="84" height="26" rx="9" fill="#9b8dff"/><text x="968" y="489" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="10" font-weight="700">Install</text>
+</svg>
