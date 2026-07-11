@@ -1,30 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { RefreshIcon } from "@hugeicons/core-free-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PageContainer } from "@/app/PageContainer";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { HugeIcon } from "@/components/ui/huge-icon";
-import {
-  refreshGoogleFontsCache,
-  searchGoogleFonts,
-  type GoogleFontsSearchInput,
-} from "@/lib/api/google-fonts";
+import { searchGoogleFonts, type GoogleFontsSearchInput } from "@/lib/api/google-fonts";
 import { toggleFavorite } from "@/lib/api/fonts";
 import { usePreviewStore } from "@/stores/preview-store";
+import { useLibraryStore } from "@/stores/library-store";
 import type { FontFamily } from "@/types/font";
 import type { ApiResult, CacheRefreshResult } from "@/types/result";
-import {
-  FontFilters,
-  type BrowseFiltersState,
-} from "./components/FontFilters";
+import { type BrowseFiltersState } from "./components/FontFilters";
 import { VirtualizedFontGrid } from "./components/VirtualizedFontGrid";
-import { FontPreviewPanel } from "./components/FontPreviewPanel";
 import { FontDetailDrawer } from "./components/FontDetailDrawer";
-import { mockBrowseFonts } from "./mock-fonts";
+import { InspectorPanel } from "./components/InspectorPanel";
+import { PreviewToolbar } from "./components/PreviewToolbar";
+import { FontViewerDialog } from "@/features/preview/FontViewerDialog";
 
 const initialFilters: BrowseFiltersState = {
-  search: "",
   category: "all",
   weight: "all",
   style: "all",
@@ -33,20 +23,20 @@ const initialFilters: BrowseFiltersState = {
   variableOnly: false,
 };
 
-type BrowseData = {
-  fonts: FontFamily[];
-  source: "backend" | "mock";
-};
-
-export function BrowsePage() {
-  const [filters, setFilters] = useState<BrowseFiltersState>(initialFilters);
+export function BrowsePage({ favoritesOnly = false }: { favoritesOnly?: boolean }) {
+  const [filters, setFilters] = useState<BrowseFiltersState>({ ...initialFilters, favoritesOnly });
   const [selectedId, setSelectedId] = useState<string>();
   const [drawerId, setDrawerId] = useState<string>();
+  const [inspectorOpen, setInspectorOpen] = useState(false);
+  const [viewerOpen, setViewerOpen] = useState(false);
   const [favoriteOverrides, setFavoriteOverrides] = useState<Record<string, boolean>>({});
   const [installedOverrides, setInstalledOverrides] = useState<Record<string, boolean>>({});
   const previewText = usePreviewStore((state) => state.text);
-  const debouncedSearch = useDebouncedValue(filters.search, 240);
+  const query = useLibraryStore((state) => state.query);
+  const view = useLibraryStore((state) => state.view);
+  const debouncedSearch = useDebouncedValue(query, 240);
   const queryClient = useQueryClient();
+  const isWideLayout = useMediaQuery("(min-width: 1280px)");
 
   const searchInput = useMemo<GoogleFontsSearchInput>(
     () => ({
@@ -67,13 +57,6 @@ export function BrowsePage() {
     queryFn: () => fetchBrowseFonts(searchInput),
   });
 
-  const refreshMutation = useMutation({
-    mutationFn: async () => unwrapApiResult(await refreshGoogleFontsCache()),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["google-fonts"] });
-    },
-  });
-
   const favoriteMutation = useMutation({
     mutationFn: async ({ familyId, favorite }: { familyId: string; favorite: boolean }) =>
       unwrapApiResult(await toggleFavorite({ familyId, favorite })),
@@ -85,14 +68,11 @@ export function BrowsePage() {
       void queryClient.invalidateQueries({ queryKey: ["google-fonts"] });
     },
     onError: (_, variables) => {
-      // Browser preview uses mock data; it has no Tauri command bridge.
-      if (fontsQuery.data?.source !== "mock") {
-        setFavoriteOverrides((current) => {
-          const next = { ...current };
-          delete next[variables.familyId];
-          return next;
-        });
-      }
+      setFavoriteOverrides((current) => {
+        const next = { ...current };
+        delete next[variables.familyId];
+        return next;
+      });
     },
   });
 
@@ -104,8 +84,7 @@ export function BrowsePage() {
     }))
     .filter((font) => !filters.favoritesOnly || font.isFavorite);
   const selectedFont = fonts.find((font) => font.id === selectedId) ?? fonts[0];
-  const lastUpdated = formatLastUpdated(refreshMutation.data, fonts);
-  const usingMockData = fontsQuery.data?.source === "mock";
+  const lastUpdated = formatLastUpdated(undefined, fonts);
 
   useEffect(() => {
     if (!selectedId && fonts[0]) {
@@ -113,147 +92,104 @@ export function BrowsePage() {
     }
   }, [fonts, selectedId]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.matches("input, textarea, select, button, [contenteditable='true']")) return;
+      const index = fonts.findIndex((font) => font.id === selectedFont?.id);
+      if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+        event.preventDefault();
+        const next = fonts[(Math.max(index, 0) + 1) % fonts.length];
+        if (next) setSelectedId(next.id);
+      }
+      if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+        event.preventDefault();
+        const next = fonts[(Math.max(index, 0) - 1 + fonts.length) % fonts.length];
+        if (next) setSelectedId(next.id);
+      }
+      if (event.key === "Enter") {
+        event.preventDefault();
+        if (isWideLayout) { setInspectorOpen(true); window.setTimeout(() => document.querySelector<HTMLElement>("[data-inspector]")?.focus(), 0); }
+        else if (selectedFont) setDrawerId(selectedFont.id);
+      }
+      if (event.key === " ") {
+        event.preventDefault();
+        if (selectedFont) setViewerOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [fonts, isWideLayout, selectedFont]);
+
   return (
-    <PageContainer>
-      <section className="space-y-6">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-          <div className="max-w-3xl">
-            <Badge variant="glass">Google Fonts</Badge>
-            <h1 className="mt-4 text-4xl font-semibold tracking-normal text-white md:text-6xl">
-              Browse font universe.
-            </h1>
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base">
-              Cached metadata, precise filtering, calm previews, no install flow yet.
-            </p>
-          </div>
+    <PageContainer className="max-w-none px-4 py-4 lg:px-6">
+      <section className="space-y-3">
+        <PreviewToolbar filters={filters} onFiltersChange={setFilters} />
 
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs text-muted-foreground">
-              Updated {lastUpdated}
-            </div>
-            <Button
-              disabled={refreshMutation.isPending}
-              variant="glass"
-              onClick={() => refreshMutation.mutate()}
-            >
-              <HugeIcon
-                icon={RefreshIcon}
-                className={refreshMutation.isPending ? "animate-spin" : undefined}
-                size={16}
-              />
-              Refresh cache
-            </Button>
-          </div>
-        </div>
+        {fontsQuery.isError ? <StatusPanel tone="warning">Font data is unavailable. Check the local font service or Google Fonts connection.</StatusPanel> : null}
 
-        <FontFilters filters={filters} onChange={setFilters} />
-
-        {usingMockData ? (
-          <StatusPanel tone="soft">
-            Backend cache unavailable in this browser session. Showing mock specimens.
-          </StatusPanel>
-        ) : null}
-
-        {refreshMutation.isError ? (
-          <StatusPanel tone="warning">
-            Refresh failed. Add Google Fonts API key in settings or check connection.
-          </StatusPanel>
-        ) : null}
-
-        {fonts.length === 0 && !fontsQuery.isLoading ? (
+        {fonts.length === 0 && !fontsQuery.isLoading && !fontsQuery.isError ? (
           <StatusPanel tone="soft">
             No families match current filters.
           </StatusPanel>
         ) : null}
 
-        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
-          <VirtualizedFontGrid
+        <div className={inspectorOpen ? "grid xl:grid-cols-[minmax(0,1fr)_296px]" : "grid"}>
+          <div className="min-w-0 pr-0 xl:pr-4">
+            <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground"><span>{fonts.length} families</span><span>{lastUpdated}</span></div>
+            <VirtualizedFontGrid
             fonts={fonts}
             loading={fontsQuery.isLoading}
             previewText={previewText}
             selectedId={selectedFont?.id}
-            onSelect={(font) => { setSelectedId(font.id); setDrawerId(font.id); }}
+            onSelect={(font) => {
+              setSelectedId(font.id);
+              if (isWideLayout) setInspectorOpen(true);
+              else setDrawerId(font.id);
+            }}
             onToggleFavorite={(font) => {
               const favorite = !font.isFavorite;
               setFavoriteOverrides((current) => ({ ...current, [font.id]: favorite }));
               favoriteMutation.mutate({ familyId: font.id, favorite });
             }}
+            favoritePendingId={
+              favoriteMutation.isPending ? favoriteMutation.variables?.familyId : undefined
+            }
+            view={view}
+          />
+          </div>
+          {inspectorOpen ? <InspectorPanel
+            font={selectedFont}
+            onInstalled={(font) => setInstalledOverrides((current) => ({ ...current, [font.id]: true }))}
+            onClose={() => setInspectorOpen(false)}
+            onOpenViewer={() => setViewerOpen(true)}
+            onToggleFavorite={(font) => {
+              const favorite = !font.isFavorite;
+              setFavoriteOverrides((current) => ({ ...current, [font.id]: favorite }));
+              favoriteMutation.mutate({ familyId: font.id, favorite });
+            }}
+          /> : null}
+        </div>
+        {!isWideLayout ? (
+          <FontDetailDrawer
+            font={fonts.find((font) => font.id === drawerId)}
+            open={Boolean(drawerId)}
+            onOpenChange={(open) => !open && setDrawerId(undefined)}
             onInstalled={(font) => {
               setInstalledOverrides((current) => ({ ...current, [font.id]: true }));
               void queryClient.invalidateQueries({ queryKey: ["google-fonts"] });
               void queryClient.invalidateQueries({ queryKey: ["installed-fonts"] });
             }}
-            favoritePendingId={
-              favoriteMutation.isPending ? favoriteMutation.variables?.familyId : undefined
-            }
           />
-          <FontPreviewPanel
-            font={selectedFont}
-            fonts={fonts}
-            onInstalled={(font) => setInstalledOverrides((current) => ({ ...current, [font.id]: true }))}
-          />
-        </div>
-        <FontDetailDrawer
-          font={fonts.find((font) => font.id === drawerId)}
-          open={Boolean(drawerId)}
-          onOpenChange={(open) => !open && setDrawerId(undefined)}
-          onInstalled={(font) => {
-            setInstalledOverrides((current) => ({ ...current, [font.id]: true }));
-            void queryClient.invalidateQueries({ queryKey: ["google-fonts"] });
-            void queryClient.invalidateQueries({ queryKey: ["installed-fonts"] });
-          }}
-        />
+        ) : null}
+        <FontViewerDialog font={selectedFont} open={viewerOpen} onOpenChange={setViewerOpen} />
       </section>
     </PageContainer>
   );
 }
 
-async function fetchBrowseFonts(input: GoogleFontsSearchInput): Promise<BrowseData> {
-  try {
-    const result = await searchGoogleFonts(input);
-    return {
-      fonts: unwrapApiResult(result),
-      source: "backend",
-    };
-  } catch {
-    return {
-      // Keep local favorites visible after optimistic updates in browser preview.
-      fonts: filterMockFonts({ ...input, favoritesOnly: undefined }),
-      source: "mock",
-    };
-  }
-}
-
-function filterMockFonts(input: GoogleFontsSearchInput): FontFamily[] {
-  const query = input.query.trim().toLowerCase();
-
-  return mockBrowseFonts.filter((font) => {
-    const matchesQuery =
-      query.length === 0 || font.family.toLowerCase().includes(query);
-    const matchesCategory =
-      !input.categories?.length || input.categories.includes(font.category);
-    const matchesWeight =
-      !input.weights?.length ||
-      font.variants.some((variant) => input.weights?.includes(variant.weight));
-    const matchesStyle =
-      !input.styles?.length ||
-      font.variants.some((variant) => input.styles?.includes(variant.style));
-    const matchesFavorite = !input.favoritesOnly || font.isFavorite;
-    const matchesInstalled = !input.installedOnly || font.isInstalled;
-    const matchesVariable =
-      !input.variableOnly ||
-      font.variants.some((variant) => Boolean(variant.variableAxes));
-
-    return (
-      matchesQuery &&
-      matchesCategory &&
-      matchesWeight &&
-      matchesStyle &&
-      matchesFavorite &&
-      matchesInstalled &&
-      matchesVariable
-    );
-  });
+async function fetchBrowseFonts(input: GoogleFontsSearchInput): Promise<{ fonts: FontFamily[] }> {
+  return { fonts: unwrapApiResult(await searchGoogleFonts(input)) };
 }
 
 function unwrapApiResult<T>(result: ApiResult<T>): T {
@@ -308,6 +244,20 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
   return debouncedValue;
 }
 
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(query);
+    const update = () => setMatches(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener("change", update);
+    return () => mediaQuery.removeEventListener("change", update);
+  }, [query]);
+
+  return matches;
+}
+
 type StatusPanelProps = {
   children: string;
   tone: "soft" | "warning";
@@ -316,11 +266,11 @@ type StatusPanelProps = {
 function StatusPanel({ children, tone }: StatusPanelProps) {
   const className =
     tone === "warning"
-      ? "border-orange-300/20 bg-orange-400/10 text-orange-100"
-      : "border-white/10 bg-white/[0.04] text-muted-foreground";
+      ? "border-amber-500/30 bg-amber-500/10 text-foreground"
+      : "border-border bg-muted/50 text-muted-foreground";
 
   return (
-    <div className={`rounded-[18px] border px-4 py-3 text-sm ${className}`}>
+    <div className={`rounded-md border px-3 py-2 text-sm ${className}`}>
       {children}
     </div>
   );

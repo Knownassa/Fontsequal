@@ -24,10 +24,10 @@ type InstalledFilters = {
   recentOnly: boolean;
 };
 
-export function InstalledPage() {
+export function InstalledPage({ duplicatesOnly = false }: { duplicatesOnly?: boolean }) {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState<InstalledFilters>({ managed: false, external: false, duplicates: false, fileType: "all", recentOnly: false });
+  const [filters, setFilters] = useState<InstalledFilters>({ managed: false, external: false, duplicates: duplicatesOnly, fileType: "all", recentOnly: false });
   const [selectedId, setSelectedId] = useState<string>();
   const [batchIds, setBatchIds] = useState<string[]>([]);
   const [pendingUninstall, setPendingUninstall] = useState<InstalledFont[] | null>(null);
@@ -85,15 +85,11 @@ export function InstalledPage() {
   }, [selected, selectedId]);
 
   return (
-    <PageContainer>
-      <section className="space-y-5">
-        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div>
-            <Badge variant="glass">Local library</Badge>
-            <h1 className="mt-3 text-4xl font-semibold tracking-normal text-white md:text-5xl">Installed fonts.</h1>
-            <p className="mt-2 text-sm text-muted-foreground">Read-only scan. System files stay untouched.</p>
-          </div>
-          <div className="flex flex-wrap gap-2"><ImportFontsDialog /><Button disabled={scanMutation.isPending} variant="glass" onClick={() => scanMutation.mutate()}>
+    <PageContainer className="max-w-none px-4 py-4 lg:px-6">
+      <section className="space-y-3">
+        <div className="flex items-center justify-between border-b pb-3">
+          <div><h2 className="text-sm font-semibold">Installed fonts</h2><p className="mt-1 text-xs text-muted-foreground">Read-only scan. System files stay untouched.</p></div>
+          <div className="flex flex-wrap gap-2"><ImportFontsDialog /><Button disabled={scanMutation.isPending} variant="raised" onClick={() => scanMutation.mutate()}>
             <HugeIcon icon={RefreshIcon} className={scanMutation.isPending ? "animate-spin" : undefined} size={16} />
             Rescan fonts
           </Button></div>
@@ -101,11 +97,11 @@ export function InstalledPage() {
 
         {scanMutation.isError ? <Status>Scan failed. Existing local results remain available.</Status> : null}
 
-        <div className="grid gap-5 xl:grid-cols-[370px_minmax(0,1fr)]">
-          <section className="rounded-[24px] border border-white/10 bg-white/[0.04] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,.06),0_18px_60px_rgba(0,0,0,.25)]">
+        {!fontsQuery.isLoading && fonts.length === 0 ? <InstalledEmpty onRescan={() => scanMutation.mutate()} pending={scanMutation.isPending} /> : <div className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_296px]">
+          <section className="glass-panel p-3">
             <label className="relative block">
               <HugeIcon icon={Search01Icon} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
-              <Input className="h-10 rounded-full border-white/10 bg-black/20 pl-9" placeholder="Search local fonts" value={search} onChange={(event) => setSearch(event.target.value)} />
+              <Input className="h-8 bg-surface pl-9" placeholder="Search local fonts" value={search} onChange={(event) => setSearch(event.target.value)} />
             </label>
             <div className="mt-3 grid grid-cols-3 gap-2">
               <Filter checked={filters.managed} label="Managed" onChange={(managed) => setFilters((current) => ({ ...current, managed }))} />
@@ -116,7 +112,6 @@ export function InstalledPage() {
 
             <div className="mt-4 space-y-2">
               {fontsQuery.isLoading ? <InstalledSkeletons /> : null}
-              {!fontsQuery.isLoading && fonts.length === 0 ? <p className="px-2 py-8 text-center text-sm text-muted-foreground">No matching installed fonts.</p> : null}
               <FontSection title="Managed by Fontsequal" fonts={visibleFonts.filter((font) => font.isManaged)} selected={selected?.id} batchIds={batchIds} setBatchIds={setBatchIds} setSelectedId={setSelectedId} />
               <FontSection title="System fonts" fonts={visibleFonts.filter((font) => !font.isManaged && font.source === "system")} selected={selected?.id} batchIds={batchIds} setBatchIds={setBatchIds} setSelectedId={setSelectedId} />
               <FontSection title="External user fonts" fonts={visibleFonts.filter((font) => !font.isManaged && font.source !== "system")} selected={selected?.id} batchIds={batchIds} setBatchIds={setBatchIds} setSelectedId={setSelectedId} />
@@ -127,7 +122,7 @@ export function InstalledPage() {
           </section>
 
           <FontDetails font={selected} onUninstall={(font) => setPendingUninstall([font])} />
-        </div>
+        </div>}
       </section>
       <UninstallDialog fonts={pendingUninstall ?? []} open={Boolean(pendingUninstall)} pending={uninstallMutation.isPending} onOpenChange={(open) => !open && !uninstallMutation.isPending && setPendingUninstall(null)} onConfirm={() => pendingUninstall && uninstallMutation.mutate(pendingUninstall)} />
     </PageContainer>
@@ -136,17 +131,17 @@ export function InstalledPage() {
 
 function FontRow({ font, selected, checked, onCheckedChange, onSelect }: { font: InstalledFont; selected: boolean; checked: boolean; onCheckedChange: (checked: boolean) => void; onSelect: () => void }) {
   return (
-    <div className={`flex rounded-2xl border px-3 py-3 transition-colors ${selected ? "border-violet-300/35 bg-violet-400/10" : "border-white/10 bg-black/15 hover:border-white/20 hover:bg-white/[0.05]"}`}>
-      {font.isManaged ? <input aria-label={`Select ${font.family} for uninstall`} checked={checked} className="mr-3 mt-1 size-4 accent-violet-400" type="checkbox" onChange={(event) => onCheckedChange(event.target.checked)} /> : null}
+    <div className={`glass-control flex px-3 py-2 ${selected ? "selected-surface" : "hover:bg-[var(--control-hover)]"}`}>
+      {font.isManaged ? <input aria-label={`Select ${font.family} for uninstall`} checked={checked} className="mr-3 mt-1 size-4 accent-primary" type="checkbox" onChange={(event) => onCheckedChange(event.target.checked)} /> : null}
       <button aria-current={selected || undefined} className="min-w-0 flex-1 text-left" type="button" onClick={onSelect}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-white">{font.family}</p>
+          <p className="truncate text-sm font-semibold">{font.family}</p>
           <p className="mt-1 text-xs text-muted-foreground">{font.weight} · {font.style}</p>
         </div>
         <div className="flex shrink-0 gap-1">
           {font.isManaged ? <Badge className="h-5 px-2 text-[10px]" variant="glass">Managed</Badge> : <Badge className="h-5 px-2 text-[10px]" variant="glass">External</Badge>}
-          {font.isDuplicate ? <Badge className="h-5 border-orange-300/25 bg-orange-400/10 px-2 text-[10px] text-orange-100">Dupe</Badge> : null}
+          {font.isDuplicate ? <Badge className="h-5 border-border bg-muted px-2 text-[10px] text-foreground">Dupe</Badge> : null}
         </div>
       </div>
       </button>
@@ -158,19 +153,19 @@ function FontSection({ title, fonts, selected, batchIds, setBatchIds, setSelecte
 
 function FontDetails({ font, onUninstall }: { font?: InstalledFont; onUninstall: (font: InstalledFont) => void }) {
   if (!font) {
-    return <section className="rounded-[24px] border border-white/10 bg-white/[0.04] p-6 text-sm text-muted-foreground">Rescan fonts to populate local library.</section>;
+    return <section className="glass-panel p-5 text-sm text-muted-foreground">Rescan fonts to populate local library.</section>;
   }
   const managedFile = font.files.find((file) => file.path);
   const path = managedFile?.path ?? "Path unavailable";
 
   return (
-    <section className="space-y-5 rounded-[24px] border border-white/10 bg-white/[0.04] p-6 shadow-[inset_0_1px_0_rgba(255,255,255,.06),0_18px_60px_rgba(0,0,0,.25)]">
+    <section className="glass-panel space-y-4 p-4">
       <div>
         <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Font details</p>
-        <h2 className="mt-2 text-3xl font-semibold tracking-normal text-white">{font.family}</h2>
+        <h2 className="mt-1 text-xl font-semibold tracking-normal">{font.family}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{font.fullName ?? font.postScriptName ?? "Local font"}</p>
       </div>
-      <p className="min-h-36 rounded-2xl border border-white/10 bg-black/20 p-5 text-5xl font-semibold leading-none text-white">Fontsequal</p>
+      <p className="inset-surface min-h-36 rounded-[12px] bg-[radial-gradient(circle_at_18%_8%,var(--surface-3),transparent_48%)] p-5 text-5xl font-semibold leading-none text-foreground">Fontsequal</p>
       <div className="grid gap-3 sm:grid-cols-2">
         <Detail label="Style" value={`${font.weight} · ${font.style}`} />
         <Detail label="PostScript" value={font.postScriptName ?? "Unavailable"} />
@@ -185,13 +180,14 @@ function FontDetails({ font, onUninstall }: { font?: InstalledFont; onUninstall:
 }
 
 function Filter({ checked, label, onChange }: { checked: boolean; label: string; onChange: (checked: boolean) => void }) {
-  return <label className="flex flex-col gap-1 rounded-xl border border-white/10 bg-black/15 px-2 py-2 text-[10px] text-muted-foreground"><Switch checked={checked} onCheckedChange={onChange} /><span>{label}</span></label>;
+  return <label className="glass-control flex flex-col gap-1 px-2 py-2 text-[10px] text-muted-foreground"><Switch checked={checked} onCheckedChange={onChange} /><span>{label}</span></label>;
 }
 function Detail({ label, value, long = false }: { label: string; value: string; long?: boolean }) {
-  return <div className={`rounded-2xl border border-white/10 bg-black/20 p-3 ${long ? "" : ""}`}><p className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</p><p className="mt-1 break-all text-sm text-white/85">{value}</p></div>;
+  return <div className={`inset-surface p-3 ${long ? "" : ""}`}><p className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">{label}</p><p className="mt-1 break-all text-sm text-foreground">{value}</p></div>;
 }
-function Status({ children }: { children: string }) { return <div className="rounded-2xl border border-orange-300/20 bg-orange-400/10 px-4 py-3 text-sm text-orange-100">{children}</div>; }
-function InstalledSkeletons() { return <>{Array.from({ length: 6 }).map((_, index) => <Skeleton key={index} className="h-16 rounded-2xl" />)}</>; }
+function Status({ children }: { children: string }) { return <div className="glass-panel px-4 py-3 text-sm text-foreground">{children}</div>; }
+function InstalledEmpty({ pending, onRescan }: { pending: boolean; onRescan: () => void }) { return <div className="glass-panel mx-auto flex max-w-md flex-col items-center px-6 py-12 text-center"><div className="inset-surface grid size-12 place-items-center rounded-[12px] text-lg">Aa</div><h3 className="mt-4 text-sm font-semibold">No installed fonts found</h3><p className="mt-2 max-w-xs text-xs leading-5 text-muted-foreground">Scan your local library to show managed, system, and external font files.</p><Button className="mt-4" disabled={pending} size="sm" variant="raised" onClick={onRescan}>{pending ? "Scanning" : "Rescan fonts"}</Button></div>; }
+function InstalledSkeletons() { return <>{Array.from({ length: 6 }).map((_, index) => <Skeleton key={index} className="h-14 rounded-md" />)}</>; }
 function unwrap<T>(result: ApiResult<T>): T { if (result.ok) return result.data; throw new Error(result.error); }
 function useDebouncedValue<T>(value: T, delay: number) { const [debounced, setDebounced] = useState(value); useEffect(() => { const id = window.setTimeout(() => setDebounced(value), delay); return () => window.clearTimeout(id); }, [delay, value]); return debounced; }
 

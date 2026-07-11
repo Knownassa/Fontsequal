@@ -4,50 +4,102 @@
 
 @layer base {
   :root {
-    --background: 240 8% 96%;
-    --foreground: 240 4% 12%;
+    --window-bg: #f4f4f5;
+    --workspace-bg: #f8f8f9;
+    --sidebar-bg: rgba(246, 246, 248, .82);
+    --inspector-bg: rgba(245, 245, 247, .86);
+    --surface-1: rgba(0, 0, 0, .025);
+    --surface-2: rgba(0, 0, 0, .045);
+    --surface-3: rgba(0, 0, 0, .065);
+    --control-bg: rgba(0, 0, 0, .055);
+    --control-hover: rgba(0, 0, 0, .085);
+    --control-active: rgba(0, 0, 0, .12);
+    --border-soft: rgba(0, 0, 0, .08);
+    --border-medium: rgba(0, 0, 0, .13);
+    --border-strong: rgba(0, 0, 0, .2);
+    --text-primary: #161617;
+    --text-secondary: #6d6d72;
+    --text-tertiary: #8d8d92;
+    --accent: #7467d9;
+    --accent-soft: rgba(116, 103, 217, .14);
+    --accent-border: rgba(116, 103, 217, .42);
+    --on-accent: #ffffff;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 240 4% 12%;
+    --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 230 15% 11%;
-    --primary: 211 100% 52%;
-    --primary-foreground: 42 33% 97%;
-    --secondary: 40 16% 91%;
-    --secondary-foreground: 230 12% 12%;
-    --muted: 40 18% 92%;
-    --muted-foreground: 230 8% 42%;
-    --accent: 40 22% 91%;
-    --accent-foreground: 230 12% 12%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 43%;
+    --accent-foreground: 0 0% 9%;
     --destructive: 0 78% 56%;
     --destructive-foreground: 0 0% 98%;
-    --border: 35 18% 84%;
-    --input: 35 18% 84%;
-    --ring: 211 100% 52%;
-    --radius: 0.75rem;
-    --sidebar: 42 33% 97%;
+    --border: 0 0% 0% / 0.08;
+    --input: 0 0% 0% / 0.12;
+    --ring: 0 0% 35%;
+    --radius: 0.5rem;
+    --sidebar: 0 0% 94%;
+    --window: var(--window-bg);
+    --toolbar: var(--workspace-bg);
+    --workspace: var(--workspace-bg);
+    --inspector: var(--inspector-bg);
+    --surface: #ffffff;
+    --hover: var(--control-hover);
+    --selected: var(--control-active);
   }
 
   .dark {
-    --background: 240 3% 12%;
-    --foreground: 240 5% 96%;
-    --card: 240 3% 18%;
-    --card-foreground: 240 20% 96%;
-    --popover: 240 3% 18%;
-    --popover-foreground: 240 20% 96%;
+    --window-bg: #0b0b0c;
+    --workspace-bg: #101011;
+    --sidebar-bg: rgba(22, 22, 24, .82);
+    --inspector-bg: rgba(20, 20, 22, .86);
+    --surface-1: rgba(255, 255, 255, .045);
+    --surface-2: rgba(255, 255, 255, .065);
+    --surface-3: rgba(255, 255, 255, .085);
+    --control-bg: rgba(255, 255, 255, .07);
+    --control-hover: rgba(255, 255, 255, .10);
+    --control-active: rgba(255, 255, 255, .14);
+    --border-soft: rgba(255, 255, 255, .08);
+    --border-medium: rgba(255, 255, 255, .13);
+    --border-strong: rgba(255, 255, 255, .20);
+    --text-primary: #f5f5f7;
+    --text-secondary: #a7a7ab;
+    --text-tertiary: #747479;
+    --accent: #8b7cff;
+    --accent-soft: rgba(139, 124, 255, .18);
+    --accent-border: rgba(139, 124, 255, .50);
+    --on-accent: #ffffff;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 11%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 11%;
+    --popover-foreground: 0 0% 96%;
     --primary: 0 0% 96%;
-    --primary-foreground: 228 21% 4%;
-    --secondary: 240 3% 22%;
-    --secondary-foreground: 240 20% 96%;
-    --muted: 240 9% 15%;
-    --muted-foreground: 235 8% 66%;
-    --accent: 240 10% 15%;
-    --accent-foreground: 240 20% 96%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 0 0% 13%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 11%;
+    --muted-foreground: 0 0% 61%;
+    --accent-foreground: 0 0% 96%;
     --destructive: 0 72% 52%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3% 25%;
-    --input: 240 3% 25%;
-    --ring: 211 100% 52%;
-    --sidebar: 240 4% 14%;
+    --border: 0 0% 100% / 0.07;
+    --input: 0 0% 100% / 0.12;
+    --ring: 0 0% 70%;
+    --sidebar: 0 0% 8%;
+    --window: var(--window-bg);
+    --toolbar: rgba(16, 16, 17, .86);
+    --workspace: var(--workspace-bg);
+    --inspector: var(--inspector-bg);
+    --surface: var(--surface-2);
+    --hover: var(--control-hover);
+    --selected: var(--control-active);
   }
 
   * {
@@ -63,7 +115,8 @@
   }
 
   body {
-    @apply min-h-screen bg-background text-foreground antialiased;
+    @apply min-h-screen text-foreground antialiased;
+    background: var(--window);
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
@@ -78,36 +131,54 @@
 }
 
 @layer components {
-  .cosmic-backdrop {
-    @apply pointer-events-none fixed inset-0;
-    background:
-      radial-gradient(circle, rgba(255, 255, 255, 0.42) 1px, transparent 1px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.16) 1px, transparent 1px),
-      linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--background)) 100%);
-    background-size:
-      44px 44px,
-      92px 92px,
-      auto;
-    background-position:
-      0 0,
-      20px 30px,
-      0 0;
+  .glass-panel {
+    background: linear-gradient(145deg, var(--surface-2), var(--surface-1));
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 24px rgba(0,0,0,.16);
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
   }
 
-  .dark .cosmic-backdrop {
-    background:
-      radial-gradient(circle, rgba(255, 255, 255, 0.38) 1px, transparent 1px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.14) 1px, transparent 1px),
-      linear-gradient(180deg, rgba(7, 8, 11, 0.98), rgba(7, 8, 11, 0.98));
-    background-size:
-      44px 44px,
-      92px 92px,
-      auto;
-    background-position:
-      0 0,
-      20px 30px,
-      0 0;
-    opacity: 0.78;
-    mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
+  .glass-control {
+    background: linear-gradient(180deg, var(--control-bg), var(--surface-1));
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 1px 2px rgba(0,0,0,.12);
+    transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
   }
+
+  .glass-control:hover { background: var(--control-hover); border-color: var(--border-medium); }
+
+  .glass-card {
+    background: linear-gradient(145deg, var(--surface-3), var(--surface-1));
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 8px 24px rgba(0,0,0,.18);
+    transition: background 120ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  }
+
+  .inset-surface {
+    background: linear-gradient(180deg, rgba(0,0,0,.14), var(--surface-1));
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+
+  .selected-surface {
+    background: linear-gradient(145deg, var(--accent-soft), var(--control-active));
+    border-color: var(--accent-border);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 0 0 1px rgba(139,124,255,.08), 0 8px 24px rgba(0,0,0,.18);
+  }
+
+  .window-toolbar {
+    background: linear-gradient(180deg, rgba(255,255,255,.025), transparent), var(--toolbar);
+    border-color: var(--border-soft);
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,.025);
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
+  }
+
+  .material-sidebar { background: var(--sidebar-bg); box-shadow: inset -1px 0 0 var(--border-soft), 8px 0 28px rgba(0,0,0,.12); backdrop-filter: blur(24px) saturate(135%); -webkit-backdrop-filter: blur(24px) saturate(135%); }
+  .material-inspector { background: var(--inspector-bg); box-shadow: inset 1px 0 0 var(--border-soft), -8px 0 28px rgba(0,0,0,.10); backdrop-filter: blur(24px) saturate(135%); -webkit-backdrop-filter: blur(24px) saturate(135%); }
 }

@@ -1,22 +1,26 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { AppHeader } from "./AppHeader";
 import { AppSidebar } from "./AppSidebar";
+import { cn } from "@/lib/utils";
 
 const routeTitles: Record<string, string> = {
   "/browse": "Browse",
+  "/favorites": "Favorites",
   "/installed": "Installed",
+  "/duplicates": "Find duplicates",
+  "/compare": "Compare fonts",
   "/collections": "Collections",
   "/settings": "Settings",
 };
 
 export function AppShell() {
   const navigate = useNavigate();
-  const searchRef = useRef<HTMLInputElement>(null);
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   });
   const title = routeTitles[pathname] ?? "Browse";
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -30,8 +34,9 @@ export function AppShell() {
 
       if (key === "k") {
         event.preventDefault();
-        searchRef.current?.focus();
-        searchRef.current?.select();
+        void navigate({ to: "/browse" }).then(() => {
+          window.dispatchEvent(new Event("fontsequal:focus-font-search"));
+        });
         return;
       }
 
@@ -58,13 +63,12 @@ export function AppShell() {
   }, [navigate]);
 
   return (
-    <div className="relative h-screen overflow-hidden bg-background text-foreground">
-      <div className="cosmic-backdrop" aria-hidden="true" />
-      <AppSidebar activePath={pathname} />
+    <div className={cn("grid h-screen grid-rows-[auto_minmax(0,1fr)] overflow-hidden bg-window text-foreground transition-[grid-template-columns] duration-200 lg:grid-rows-none", sidebarCollapsed ? "lg:grid-cols-[72px_minmax(0,1fr)]" : "lg:grid-cols-[232px_minmax(0,1fr)]")}>
+      <AppSidebar activePath={pathname} collapsed={sidebarCollapsed} onToggleCollapsed={() => setSidebarCollapsed((current) => !current)} />
 
-      <div className="relative flex h-screen min-w-0 flex-col lg:pl-[292px]">
-        <AppHeader searchRef={searchRef} title={title} />
-        <main className="min-h-0 flex-1 overflow-y-auto">
+      <div className="flex min-h-0 min-w-0 flex-col">
+        <AppHeader title={title} />
+        <main className="min-h-0 flex-1 overflow-y-auto bg-workspace">
           <Outlet />
         </main>
       </div>

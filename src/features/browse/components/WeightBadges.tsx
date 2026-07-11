@@ -15,7 +15,7 @@ export function WeightBadges({ variants }: WeightBadgesProps) {
       {weights.map((weight) => (
         <span
           key={weight}
-          className="grid h-6 min-w-9 place-items-center rounded-full border border-white/10 bg-white/[0.04] px-2 text-[11px] font-medium text-white/72"
+          className="grid h-6 min-w-9 place-items-center rounded-md border bg-surface px-2 text-[11px] font-medium text-foreground"
         >
           {weight}
         </span>

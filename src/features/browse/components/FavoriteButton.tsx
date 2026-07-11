@@ -15,8 +15,8 @@ export function FavoriteButton({ active, disabled, onClick }: FavoriteButtonProp
       aria-pressed={active}
       aria-label={active ? "Remove favorite" : "Add favorite"}
       className={cn(
-        "size-9 text-white/70 hover:text-white",
-        active && "border-pink-300/25 bg-pink-400/12 text-pink-100",
+        "glass-control size-8 border-transparent text-muted-foreground hover:text-foreground",
+        active && "selected-surface text-foreground",
       )}
       disabled={disabled}
       size="icon"

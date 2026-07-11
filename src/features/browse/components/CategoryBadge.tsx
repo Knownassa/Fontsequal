@@ -12,13 +12,13 @@ const categoryLabels: Record<FontCategory, string> = {
 };
 
 const categoryClasses: Record<FontCategory, string> = {
-  "sans-serif": "border-blue-400/20 bg-blue-400/10 text-blue-100",
-  serif: "border-orange-400/20 bg-orange-400/10 text-orange-100",
-  display: "border-purple-400/20 bg-purple-400/10 text-purple-100",
-  handwriting: "border-green-400/20 bg-green-400/10 text-green-100",
-  monospace: "border-cyan-400/20 bg-cyan-400/10 text-cyan-100",
-  symbol: "border-white/15 bg-white/8 text-white/80",
-  other: "border-white/15 bg-white/8 text-white/80",
+  "sans-serif": "border-border bg-muted text-muted-foreground",
+  serif: "border-border bg-muted text-muted-foreground",
+  display: "border-border bg-muted text-muted-foreground",
+  handwriting: "border-border bg-muted text-muted-foreground",
+  monospace: "border-border bg-muted text-muted-foreground",
+  symbol: "border-border bg-muted text-muted-foreground",
+  other: "border-border bg-muted text-muted-foreground",
 };
 
 type CategoryBadgeProps = {

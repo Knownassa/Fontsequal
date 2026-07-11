@@ -9,8 +9,8 @@ type FontGridProps = {
   selectedId?: string;
   onSelect: (font: FontFamily) => void;
   onToggleFavorite: (font: FontFamily) => void;
-  onInstalled: (font: FontFamily) => void;
   favoritePendingId?: string;
+  view?: "grid" | "list";
 };
 
 export function FontGrid({
@@ -20,22 +20,21 @@ export function FontGrid({
   selectedId,
   onSelect,
   onToggleFavorite,
-  onInstalled,
   favoritePendingId,
+  view = "grid",
 }: FontGridProps) {
   if (loading) {
     return (
-      <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+      <div className={view === "grid" ? "grid gap-3 md:grid-cols-2 2xl:grid-cols-3" : "space-y-2"}>
         {Array.from({ length: 6 }).map((_, index) => (
           <div
             key={index}
-            className="space-y-4 rounded-[22px] border border-white/10 bg-white/[0.04] p-3"
+            className="glass-card space-y-4 p-3"
           >
-            <Skeleton className="h-32 rounded-[18px]" />
+            <Skeleton className="h-32 rounded-md" />
             <div className="space-y-2 px-2 pb-2">
               <Skeleton className="h-5 w-2/5" />
-              <Skeleton className="h-6 w-4/5 rounded-full" />
-              <Skeleton className="h-7 w-full rounded-full" />
+              <Skeleton className="h-4 w-4/5" />
             </div>
           </div>
         ))}
@@ -44,7 +43,7 @@ export function FontGrid({
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+    <div className={view === "grid" ? "grid gap-3 md:grid-cols-2 2xl:grid-cols-3" : "space-y-2"}>
       {fonts.map((font) => (
         <FontCard
           key={font.id}
@@ -53,8 +52,8 @@ export function FontGrid({
           selected={font.id === selectedId}
           onSelect={onSelect}
           onToggleFavorite={onToggleFavorite}
-          onInstalled={onInstalled}
           favoritePending={font.id === favoritePendingId}
+          view={view}
         />
       ))}
     </div>

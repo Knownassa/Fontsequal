@@ -21,10 +21,22 @@
 
 | Browse and preview | Local library | Safe management |
 | --- | --- | --- |
-| Search and filter font families | Scan TTF/OTF metadata and hashes | User-scope managed installs only |
-| Typography lab with presets and comparison | Detect duplicate files | Managed-only uninstall protection |
-| Google Fonts cache and previews | Import local font copies | Linux Fontconfig cache refresh |
-| Favorites and collections | Filter system, external, and managed fonts | SQLite-backed local settings |
+| Global search, compact filters, grid/list browse | Scan TTF/OTF metadata and hashes | User-scope managed installs only |
+| Right-side inspector and full-screen font viewer | Detect duplicate files | Managed-only uninstall protection |
+| Google Fonts cache and real provider data | Import local font copies | Linux Fontconfig cache refresh |
+| Favorites, collections, and dedicated comparison workspace | Filter system, external, and managed fonts | SQLite-backed local settings |
+
+## Desktop workflow
+
+Fontsequal uses a compact desktop-editor layout designed around the font specimen:
+
+- Browse, Installed, Favorites, Collections, Compare, duplicate detection, and Settings live in the sidebar.
+- Select a font to open its contextual inspector on the right; use the expand action for a focused full-font viewer.
+- Use the Compare page to place two to four families side by side.
+- Collapse the sidebar into an icon rail when more workspace is needed.
+- Use `Ctrl/Cmd + K` to focus font search, arrow keys to change selection, `Enter` for the inspector, and `Space` for the full viewer.
+
+The browser-only Vite preview does not provide Tauri's local command bridge. Browse, installed-font, collection, and provider results are populated by the desktop app (`bun run tauri:dev`); Fontsequal intentionally does not show mock font data.
 
 ## Safety first
 
@@ -50,6 +62,14 @@ cd fontsequal
 bun install
 bun run tauri:dev
 ```
+
+For a frontend-only layout preview, run:
+
+```bash
+bun run dev
+```
+
+This serves the UI but cannot scan or manage local fonts because those operations are provided by Tauri.
 
 Managed fonts live at:
 
@@ -82,6 +102,8 @@ bun run tauri:build
 
 - [x] Local scanning, import, managed install, and safe uninstall
 - [x] Google Fonts cache, previews, favorites, collections, and settings
+- [x] Contextual font inspector, focused full viewer, and multi-font comparison page
+- [x] Responsive material desktop UI with collapsible icon sidebar
 - [x] Windows and Linux build targets
 - [ ] Published installers and signed release artifacts
 - [ ] Provider-neutral unified font index

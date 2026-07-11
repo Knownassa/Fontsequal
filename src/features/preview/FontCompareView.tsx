@@ -23,18 +23,18 @@ export function FontCompareView({ fonts }: FontCompareViewProps) {
   const availableFonts = fonts.filter((font) => !compareFontIds.includes(font.id));
 
   return (
-    <section className="space-y-4 rounded-[24px] border border-white/10 bg-white/[0.04] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,.06),0_18px_60px_rgba(0,0,0,.25)]">
+    <section className="space-y-4 border-y border-l bg-card p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Compare</p>
-          <h2 className="mt-1 text-xl font-semibold text-white">Set two to four families side by side.</h2>
+          <h2 className="mt-1 text-base font-semibold">Compare families</h2>
         </div>
         <Select
           disabled={selectedFonts.length >= 4 || availableFonts.length === 0}
           value=""
           onValueChange={(id) => setCompareFontIds([...compareFontIds, id])}
         >
-          <SelectTrigger className="h-10 w-full rounded-full border-white/10 bg-black/20 sm:w-48">
+          <SelectTrigger className="h-9 w-full bg-background sm:w-40">
             <SelectValue placeholder="Add family" />
           </SelectTrigger>
           <SelectContent>
@@ -46,7 +46,7 @@ export function FontCompareView({ fonts }: FontCompareViewProps) {
       </div>
 
       {selectedFonts.length < 2 ? (
-        <div className="rounded-2xl border border-dashed border-white/15 bg-black/15 px-4 py-8 text-center text-sm text-muted-foreground">
+        <div className="rounded-md border border-dashed bg-muted/40 px-4 py-6 text-center text-sm text-muted-foreground">
           Add {selectedFonts.length === 0 ? "two" : "one more"} family to begin comparison.
         </div>
       ) : (
@@ -74,13 +74,13 @@ function CompareSpecimen({ font, onRemove }: { font: FontFamily; onRemove: () =>
   const fontName = usePreviewFont(font, weight, italic);
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-white/10 bg-black/20">
-      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
-        <p className="truncate text-sm font-semibold text-white">{font.family}</p>
+    <article className="overflow-hidden rounded-md border bg-background">
+      <div className="flex items-center justify-between gap-3 border-b px-3 py-2">
+        <p className="truncate text-sm font-semibold">{font.family}</p>
         <Button size="sm" type="button" variant="glass" onClick={onRemove}>Remove</Button>
       </div>
       <p
-        className="min-h-40 whitespace-pre-wrap break-words p-4 text-white"
+        className="min-h-40 whitespace-pre-wrap break-words p-4 text-foreground"
         style={{
           fontFamily: fontName,
           fontSize: `clamp(18px, ${fontSize}px, 72px)`,

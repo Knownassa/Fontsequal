@@ -1,40 +1,30 @@
-import type { RefObject } from "react";
-import { RefreshIcon } from "@hugeicons/core-free-icons";
+import { Settings2 } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { HugeIcon } from "@/components/ui/huge-icon";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { ImportFontsDialog } from "@/features/import/ImportFontsDialog";
 import { SearchCommand } from "./SearchCommand";
 import { ThemeToggle } from "./ThemeToggle";
 
 type AppHeaderProps = {
-  searchRef: RefObject<HTMLInputElement>;
   title: string;
 };
 
-export function AppHeader({ searchRef, title }: AppHeaderProps) {
+export function AppHeader({ title }: AppHeaderProps) {
+  const navigate = useNavigate();
+
   return (
-    <header className="z-20 flex shrink-0 flex-col gap-4 px-3 pb-2 pt-3 md:flex-row md:items-center md:justify-between lg:px-4 lg:pl-0">
-      <div className="min-w-[160px]">
-        <p className="text-xs font-semibold uppercase text-muted-foreground">
-          Typography workspace
-        </p>
-        <h1 className="mt-1 text-2xl font-semibold tracking-normal">{title}</h1>
+    <header className="window-toolbar flex min-h-12 shrink-0 flex-wrap items-center gap-2 border-b px-2 sm:grid sm:h-12 sm:grid-cols-[minmax(140px,1fr)_minmax(220px,440px)_minmax(140px,1fr)] sm:px-3">
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="text-sm font-semibold">Fontsequal</span>
+        <span className="text-xs text-muted-foreground">/</span>
+        <span className="truncate text-xs text-muted-foreground">{title}</span>
       </div>
 
-      <div className="flex min-w-0 flex-1 items-center gap-2 md:max-w-3xl md:justify-end">
-        <SearchCommand ref={searchRef} className="min-w-0 flex-1" />
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="glass" size="icon" aria-label="Refresh">
-              <HugeIcon icon={RefreshIcon} size={18} />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Refresh</TooltipContent>
-        </Tooltip>
+      <SearchCommand className="order-3 basis-full sm:order-none sm:basis-auto" />
+
+      <div className="ml-auto flex items-center justify-end gap-1 sm:ml-0">
+        <div className="hidden sm:block"><ImportFontsDialog compact /></div>
+        <Button aria-label="Settings" className="size-7" size="icon" variant="ghost" onClick={() => void navigate({ to: "/settings" })}><Settings2 className="size-4" /></Button>
         <ThemeToggle />
       </div>
     </header>

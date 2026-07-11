@@ -73,15 +73,15 @@ export function FontCardPreview({
     <div
       ref={ref}
       className={cn(
-        "relative min-h-32 overflow-hidden rounded-[18px] border border-white/10 bg-[radial-gradient(circle_at_20%_15%,rgba(255,255,255,0.12),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.025))] p-4",
+        "inset-surface relative min-h-32 overflow-hidden rounded-[12px] bg-[radial-gradient(circle_at_18%_10%,var(--surface-3),transparent_46%),linear-gradient(180deg,var(--surface-2),transparent)] p-5",
         className,
       )}
     >
-      <span className="absolute right-4 top-3 text-5xl font-semibold leading-none text-white/[0.035]">
+      <span className="absolute right-4 top-3 text-6xl font-semibold leading-none text-foreground/[0.06]">
         Aa
       </span>
       <p
-        className="relative line-clamp-3 text-2xl font-semibold leading-tight text-white"
+        className="relative line-clamp-3 text-[28px] font-semibold leading-[1.05] tracking-[-.025em] text-foreground"
         style={{ fontFamily: visible && fontFile?.url ? fontFaceName : undefined }}
       >
         {previewText}

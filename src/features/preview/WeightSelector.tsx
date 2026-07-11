@@ -19,8 +19,8 @@ export function WeightSelector({ variants, value, onChange }: WeightSelectorProp
           className={cn(
             "min-w-11 rounded-lg border px-2 py-1.5 text-xs font-medium transition-colors",
             weight === value
-              ? "border-violet-300/40 bg-violet-400/15 text-white"
-              : "border-white/10 bg-black/20 text-white/65 hover:border-white/20 hover:text-white",
+              ? "border-primary/40 bg-accent text-accent-foreground"
+              : "border-input bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
           )}
           type="button"
           onClick={() => onChange(weight)}

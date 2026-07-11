@@ -24,7 +24,7 @@ export function ThemeToggle() {
       <Tooltip>
         <TooltipTrigger asChild>
           <DropdownMenuTrigger asChild>
-            <Button variant="glass" size="icon" aria-label="Theme">
+            <Button className="size-7" variant="ghost" size="icon" aria-label="Theme">
               {theme === "light" ? (
                 <HugeIcon icon={Sun02Icon} size={18} />
               ) : (

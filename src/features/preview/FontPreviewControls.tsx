@@ -32,7 +32,7 @@ export function FontPreviewControls({ font }: FontPreviewControlsProps) {
 
       <ControlLabel label="Specimen">
         <textarea
-          className="mt-2 min-h-24 w-full resize-y rounded-xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm leading-5 text-white outline-none placeholder:text-muted-foreground focus:border-violet-300/45 focus:ring-2 focus:ring-violet-400/15"
+          className="mt-2 min-h-24 w-full resize-y rounded-md border bg-background px-3 py-2.5 text-sm leading-5 text-foreground outline-none placeholder:text-muted-foreground focus:border-ring focus:ring-2 focus:ring-ring/20"
           value={text}
           onChange={(event) => setText(event.target.value)}
         />
@@ -43,7 +43,7 @@ export function FontPreviewControls({ font }: FontPreviewControlsProps) {
           <WeightSelector variants={font.variants} value={weight} onChange={setWeight} />
           <Button
             aria-pressed={italic}
-            className={cn(italic && "border-violet-300/40 bg-violet-400/15 text-white")}
+            className={cn(italic && "bg-accent text-accent-foreground")}
             disabled={!italicAvailable}
             size="sm"
             type="button"
@@ -86,7 +86,7 @@ function SliderControl({ label, value, min, max, step, suffix, onChange }: Slide
     <div>
       <div className="flex items-center justify-between text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
         <span>{label}</span>
-        <span className="normal-case tracking-normal text-white/75">{value}{suffix}</span>
+        <span className="normal-case tracking-normal text-foreground">{value}{suffix}</span>
       </div>
       <Slider
         className="mt-3"

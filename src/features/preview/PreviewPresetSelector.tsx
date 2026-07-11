@@ -13,8 +13,8 @@ export function PreviewPresetSelector() {
           className={cn(
             "rounded-xl border px-3 py-2 text-left text-xs font-medium transition-colors",
             preset.id === presetId
-              ? "border-violet-300/40 bg-violet-400/15 text-white"
-              : "border-white/10 bg-black/20 text-white/65 hover:border-white/20 hover:bg-white/[0.06] hover:text-white",
+              ? "border-primary/40 bg-accent text-accent-foreground"
+              : "border-input bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
           )}
           type="button"
           onClick={() => applyPreset(preset)}

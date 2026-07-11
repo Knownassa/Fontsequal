@@ -10,6 +10,7 @@ import { BrowsePage } from "../features/browse/BrowsePage";
 import { CollectionsPage } from "../features/collections/CollectionsPage";
 import { InstalledPage } from "../features/installed/InstalledPage";
 import { SettingsPage } from "../features/settings/SettingsPage";
+import { ComparePage } from "../features/compare/ComparePage";
 import { AppShell } from "./AppShell";
 
 const rootRoute = createRootRoute({
@@ -33,6 +34,12 @@ const browseRoute = createRoute({
   component: BrowsePage,
 });
 
+const favoritesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/favorites",
+  component: () => <BrowsePage favoritesOnly />,
+});
+
 const installedRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/installed",
@@ -51,12 +58,27 @@ const settingsRoute = createRoute({
   component: SettingsPage,
 });
 
+const duplicatesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/duplicates",
+  component: () => <InstalledPage duplicatesOnly />,
+});
+
+const compareRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/compare",
+  component: ComparePage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   browseRoute,
+  favoritesRoute,
   installedRoute,
   collectionsRoute,
   settingsRoute,
+  duplicatesRoute,
+  compareRoute,
 ]);
 
 const router = createRouter({ routeTree });

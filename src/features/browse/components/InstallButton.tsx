@@ -37,7 +37,7 @@ export function InstallButton({ font, onInstalled, className }: InstallButtonPro
       {font.variants.length > 1 ? (
         <select
           aria-label={`Choose ${font.family} variant`}
-          className="h-8 max-w-20 rounded-full border border-white/10 bg-black/20 px-2 text-[11px] text-white outline-none"
+          className="h-8 max-w-20 rounded-md border bg-background px-2 text-[11px] text-foreground outline-none"
           value={variantId}
           onChange={(event) => setVariantId(event.target.value)}
         >
@@ -45,7 +45,7 @@ export function InstallButton({ font, onInstalled, className }: InstallButtonPro
           {font.variants.map((variant) => <option key={variant.id} value={variant.id}>{variant.label}</option>)}
         </select>
       ) : null}
-      <Button className="shrink-0" disabled={font.isInstalled || mutation.isPending || !variantId} size="sm" variant="glass" onClick={() => mutation.mutate()}>
+      <Button className="shrink-0" disabled={font.isInstalled || mutation.isPending || !variantId} size="sm" variant={font.isInstalled ? "outline" : "default"} onClick={() => mutation.mutate()}>
         <HugeIcon icon={Download01Icon} className={mutation.isPending ? "animate-pulse" : undefined} size={15} />
         {font.isInstalled ? "Installed" : mutation.isPending ? "Installing" : "Install"}
       </Button>

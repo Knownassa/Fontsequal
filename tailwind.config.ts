@@ -36,7 +36,7 @@ const config = {
           foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
+          DEFAULT: "var(--accent)",
           foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
@@ -48,20 +48,13 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         sidebar: "hsl(var(--sidebar))",
-        cosmic: {
-          bg: "#07080b",
-          soft: "#0b0c10",
-          card: "#191920",
-          elevated: "#1b1b23",
-        },
-        neon: {
-          purple: "#7c3cff",
-          violet: "#9b5cff",
-          blue: "#2e8cff",
-          cyan: "#38d7ff",
-          orange: "#ff8a1f",
-          green: "#4ade80",
-        },
+        window: "var(--window)",
+        toolbar: "var(--toolbar)",
+        workspace: "var(--workspace)",
+        inspector: "var(--inspector)",
+        surface: "var(--surface)",
+        hover: "var(--hover)",
+        selected: "var(--selected)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -69,8 +62,7 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       boxShadow: {
-        card: "inset 0 1px 0 rgba(255,255,255,.05), 0 18px 60px rgba(0,0,0,.32)",
-        "soft-glow": "0 0 56px rgba(124,60,255,.22)",
+        card: "0 1px 3px rgba(0, 0, 0, .12)",
       },
       fontFamily: {
         sans: [

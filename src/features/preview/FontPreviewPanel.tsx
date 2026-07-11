@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
 import { InstallButton } from "@/features/browse/components/InstallButton";
 import type { FontFamily } from "@/types/font";
 import { usePreviewStore } from "@/stores/preview-store";
@@ -25,29 +24,29 @@ export function FontPreviewPanel({ font, availableFonts = [], onInstalled }: Fon
 
   if (!font) {
     return (
-      <aside className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5 text-sm text-muted-foreground">
-        Select family to open preview lab.
+      <aside className="hidden border-l bg-card p-5 text-sm text-muted-foreground xl:block">
+        Select a family to inspect its preview and variants.
       </aside>
     );
   }
 
   return (
-    <div className="space-y-5">
-      <section className="overflow-hidden rounded-[24px] border border-white/10 bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,.06),0_18px_60px_rgba(0,0,0,.25)]">
-        <div className="flex items-start justify-between gap-4 border-b border-white/10 px-5 py-4">
+    <aside className="hidden space-y-5 border-l bg-card py-5 pl-5 xl:block">
+      <section className="overflow-hidden border-y border-l bg-card">
+        <div className="flex items-start justify-between gap-3 border-b px-4 py-4">
           <div>
-            <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">Typography lab</p>
-            <h2 className="mt-1 text-2xl font-semibold text-white">{font.family}</h2>
+            <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">Selected family</p>
+            <h2 className="mt-1 text-xl font-semibold">{font.family}</h2>
           </div>
-          <div className="flex items-center gap-2"><Badge variant="glass">{font.category}</Badge><InstallButton font={font} onInstalled={onInstalled} /></div>
+          <InstallButton font={font} onInstalled={onInstalled} />
         </div>
         <Specimen font={font} />
-        <div className="border-t border-white/10 p-5">
+        <div className="border-t p-4">
           <FontPreviewControls font={font} />
         </div>
       </section>
       <FontCompareView fonts={availableFonts.length ? availableFonts : [font]} />
-    </div>
+    </aside>
   );
 }
 
@@ -61,10 +60,10 @@ function Specimen({ font }: { font: FontFamily }) {
   const fontName = usePreviewFont(font, weight, italic);
 
   return (
-    <div className="relative overflow-hidden bg-[radial-gradient(circle_at_85%_0%,rgba(139,92,246,.22),transparent_30%),linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.015))] p-5 sm:p-7">
-      <span className="pointer-events-none absolute right-5 top-2 text-8xl font-semibold leading-none text-white/[0.035]">Aa</span>
+    <div className="relative overflow-hidden bg-muted/45 p-5 sm:p-6">
+      <span className="pointer-events-none absolute right-5 top-2 text-8xl font-semibold leading-none text-foreground/[0.05]">Aa</span>
       <p
-        className="relative min-h-52 whitespace-pre-wrap break-words text-white"
+        className="relative min-h-52 whitespace-pre-wrap break-words text-foreground"
         style={{
           fontFamily: fontName,
           fontSize: `clamp(22px, ${fontSize}px, 120px)`,
