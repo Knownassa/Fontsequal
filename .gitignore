@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ssr
+*.local
+.tmp
+
+src-tauri/target
+src-tauri/gen
+src-tauri/icons/*.png
+src-tauri/icons/*.ico
+src-tauri/icons/*.icns
