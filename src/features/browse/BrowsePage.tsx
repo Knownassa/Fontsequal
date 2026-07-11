@@ -18,8 +18,9 @@ import {
   FontFilters,
   type BrowseFiltersState,
 } from "./components/FontFilters";
-import { FontGrid } from "./components/FontGrid";
+import { VirtualizedFontGrid } from "./components/VirtualizedFontGrid";
 import { FontPreviewPanel } from "./components/FontPreviewPanel";
+import { FontDetailDrawer } from "./components/FontDetailDrawer";
 import { mockBrowseFonts } from "./mock-fonts";
 
 const initialFilters: BrowseFiltersState = {
@@ -40,6 +41,7 @@ type BrowseData = {
 export function BrowsePage() {
   const [filters, setFilters] = useState<BrowseFiltersState>(initialFilters);
   const [selectedId, setSelectedId] = useState<string>();
+  const [drawerId, setDrawerId] = useState<string>();
   const [favoriteOverrides, setFavoriteOverrides] = useState<Record<string, boolean>>({});
   const [installedOverrides, setInstalledOverrides] = useState<Record<string, boolean>>({});
   const previewText = usePreviewStore((state) => state.text);
@@ -165,12 +167,12 @@ export function BrowsePage() {
         ) : null}
 
         <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_340px]">
-          <FontGrid
+          <VirtualizedFontGrid
             fonts={fonts}
             loading={fontsQuery.isLoading}
             previewText={previewText}
             selectedId={selectedFont?.id}
-            onSelect={(font) => setSelectedId(font.id)}
+            onSelect={(font) => { setSelectedId(font.id); setDrawerId(font.id); }}
             onToggleFavorite={(font) => {
               const favorite = !font.isFavorite;
               setFavoriteOverrides((current) => ({ ...current, [font.id]: favorite }));
@@ -191,6 +193,16 @@ export function BrowsePage() {
             onInstalled={(font) => setInstalledOverrides((current) => ({ ...current, [font.id]: true }))}
           />
         </div>
+        <FontDetailDrawer
+          font={fonts.find((font) => font.id === drawerId)}
+          open={Boolean(drawerId)}
+          onOpenChange={(open) => !open && setDrawerId(undefined)}
+          onInstalled={(font) => {
+            setInstalledOverrides((current) => ({ ...current, [font.id]: true }));
+            void queryClient.invalidateQueries({ queryKey: ["google-fonts"] });
+            void queryClient.invalidateQueries({ queryKey: ["installed-fonts"] });
+          }}
+        />
       </section>
     </PageContainer>
   );

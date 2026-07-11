@@ -15,3 +15,8 @@
 - [ ] README is accurate.
 - [ ] Windows NSIS/MSI artifacts verified.
 - [ ] Linux DEB/AppImage artifacts verified.
+- [ ] CI passes on Windows and Linux.
+- [ ] `bun run build` passes.
+- [ ] `cargo fmt --check`, `cargo clippy -- -D warnings`, and `cargo test` pass.
+- [ ] Issue templates, Code of Conduct, Security policy, and README links reviewed.
+- [ ] No release is published until installers and manual checks are approved.

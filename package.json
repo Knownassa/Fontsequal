@@ -2,10 +2,13 @@
   "name": "fontsequal",
   "private": true,
   "version": "0.1.0",
+  "packageManager": "bun@1.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit",

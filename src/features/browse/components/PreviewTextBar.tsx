@@ -1,0 +1,2 @@
+import { Input } from "@/components/ui/input";
+export function PreviewTextBar({ value, onChange }: { value: string; onChange: (value: string) => void }) { return <label className="block rounded-2xl border border-white/10 bg-white/[0.04] p-2"><span className="sr-only">Preview text</span><Input className="h-10 border-0 bg-transparent text-base shadow-none focus-visible:ring-0" value={value} placeholder="Type preview text" onChange={(event) => onChange(event.target.value)} /></label>; }

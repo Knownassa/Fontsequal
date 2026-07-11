@@ -75,10 +75,9 @@ export function AppSidebar({ activePath }: AppSidebarProps) {
               <HugeIcon icon={SparklesIcon} size={17} />
             </div>
             <div>
-              <p className="text-sm font-medium">Mock workspace</p>
+            <p className="text-sm font-medium">Local-first library</p>
               <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                Browse, installs, collections, and settings are ready for real
-                font data.
+                System fonts stay read-only. Managed fonts stay under your control.
               </p>
             </div>
           </div>

@@ -12,6 +12,8 @@ export type FontStyle = "normal" | "italic" | "oblique";
 export type InstallScope = "user" | "system";
 
 export type FontSource = "google" | "local" | "localImport" | "system";
+export type FontProviderKind = "system" | "managed" | "remote";
+export type FontSourceBadge = { providerId: string; label: string; kind: FontProviderKind };
 
 export type FontFileFormat = "ttf" | "otf" | "woff" | "woff2" | "ttc" | "unknown";
 
@@ -60,6 +62,21 @@ export type FontFamily = {
   subsets?: string[];
   isFavorite: boolean;
   isInstalled: boolean;
+};
+
+export type UnifiedFont = {
+  id: string;
+  family: string;
+  normalizedFamily: string;
+  category: FontCategory;
+  variants: FontVariant[];
+  files: FontFile[];
+  metadata?: FontMetadata;
+  sources: FontSourceBadge[];
+  isFavorite: boolean;
+  isInstalled: boolean;
+  isManaged: boolean;
+  isReadonly: boolean;
 };
 
 export type InstalledFont = {

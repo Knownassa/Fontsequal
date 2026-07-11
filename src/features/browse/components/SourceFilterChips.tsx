@@ -1,0 +1,3 @@
+import { cn } from "@/lib/utils";
+const sources = ["System", "Managed", "Google", "Fontsource"];
+export function SourceFilterChips({ active, onChange }: { active: string[]; onChange: (sources: string[]) => void }) { return <div className="flex flex-wrap gap-2">{sources.map((source) => <button key={source} className={cn("rounded-full border px-3 py-1.5 text-xs", active.includes(source) ? "border-blue-300/40 bg-blue-400/15 text-white" : "border-white/10 bg-white/[0.04] text-muted-foreground")} type="button" onClick={() => onChange(active.includes(source) ? active.filter((item) => item !== source) : [...active, source])}>{source}</button>)}</div>; }

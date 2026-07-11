@@ -1,7 +1,7 @@
 use crate::error::AppResult;
 use rusqlite::Connection;
 
-const LATEST_SCHEMA_VERSION: i64 = 2;
+const LATEST_SCHEMA_VERSION: i64 = 3;
 
 pub fn run_migrations(connection: &Connection) -> AppResult<()> {
     connection.execute_batch(
@@ -80,6 +80,26 @@ pub fn run_migrations(connection: &Connection) -> AppResult<()> {
             updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
 
+        CREATE TABLE IF NOT EXISTS font_sources (
+            id TEXT PRIMARY KEY,
+            label TEXT NOT NULL,
+            kind TEXT NOT NULL,
+            readonly INTEGER NOT NULL DEFAULT 0,
+            enabled INTEGER NOT NULL DEFAULT 1,
+            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS font_index (
+            normalized_family TEXT PRIMARY KEY,
+            family TEXT NOT NULL,
+            category TEXT NOT NULL,
+            provider_ids_json TEXT NOT NULL,
+            is_installed INTEGER NOT NULL DEFAULT 0,
+            is_managed INTEGER NOT NULL DEFAULT 0,
+            is_readonly INTEGER NOT NULL DEFAULT 0,
+            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+
         COMMIT;
         "#,
     )?;
@@ -96,6 +116,12 @@ pub fn run_migrations(connection: &Connection) -> AppResult<()> {
             "ALTER TABLE installed_fonts ADD COLUMN is_duplicate INTEGER NOT NULL DEFAULT 0;",
         )?;
     }
+
+    let family_provider_exists: bool = connection.prepare("PRAGMA table_info(font_families)")?.query_map([], |row| row.get::<_, String>(1))?.filter_map(Result::ok).any(|column| column == "provider_id");
+    if !family_provider_exists { connection.execute_batch("ALTER TABLE font_families ADD COLUMN provider_id TEXT NOT NULL DEFAULT 'google';")?; }
+    let installed_provider_exists: bool = connection.prepare("PRAGMA table_info(installed_fonts)")?.query_map([], |row| row.get::<_, String>(1))?.filter_map(Result::ok).any(|column| column == "provider_id");
+    if !installed_provider_exists { connection.execute_batch("ALTER TABLE installed_fonts ADD COLUMN provider_id TEXT NOT NULL DEFAULT 'managed';")?; }
+    connection.execute_batch("INSERT OR IGNORE INTO font_sources (id, label, kind, readonly) VALUES ('system','System','system',1), ('managed','Managed','managed',0), ('google','Google','remote',0), ('bunny','Bunny','remote',0), ('fontsource','Fontsource','remote',0);")?;
 
     connection.pragma_update(None, "user_version", LATEST_SCHEMA_VERSION)?;
 

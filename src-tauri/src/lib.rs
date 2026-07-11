@@ -5,6 +5,7 @@ mod fonts;
 mod google;
 mod models;
 mod os;
+mod providers;
 
 use commands::{
     collections::{
@@ -15,6 +16,7 @@ use commands::{
     import_fonts::import_local_fonts,
     installed::{get_installed_fonts, scan_system_fonts},
     settings::{get_settings, update_settings},
+    unified_fonts::{list_unified_fonts, refresh_all_font_sources, refresh_font_provider, search_unified_fonts},
 };
 use db::DbState;
 use tauri::Manager;
@@ -46,6 +48,10 @@ pub fn run() {
             remove_font_from_collection,
             get_settings,
             update_settings
+            ,list_unified_fonts
+            ,search_unified_fonts
+            ,refresh_font_provider
+            ,refresh_all_font_sources
         ])
         .run(tauri::generate_context!())
         .expect("error while running Fontsequal");

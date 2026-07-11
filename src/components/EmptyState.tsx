@@ -1,0 +1,1 @@
+export function EmptyState({ title, detail }: { title: string; detail: string }) { return <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.03] px-6 py-12 text-center"><p className="font-medium text-white">{title}</p><p className="mt-2 text-sm text-muted-foreground">{detail}</p></div>; }

@@ -1,89 +1,100 @@
+<div align="center">
+
 # Fontsequal
 
-**A local-first desktop font manager for designers, developers, and branding teams.**
+### A local-first desktop font manager for designers, developers, and brand teams.
 
-Fontsequal helps you explore, preview, organize, import, and safely manage fonts without treating your font library like a generic file browser.
+[![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Tauri 2](https://img.shields.io/badge/Tauri-2-24C8DB)
+![Bun](https://img.shields.io/badge/Bun-runtime-black)
+![Platforms](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-7C3AED)
 
-## v0.1.0
+<!-- Replace with an exported product screenshot or GIF before first release. -->
+![Fontsequal desktop app placeholder](docs/images/fontsequal-preview-placeholder.svg)
 
-Fontsequal v0.1.0 targets Windows and Linux. It is an MVP: core local font workflows are ready for testing, while some platform behavior and Google Fonts integration will continue to mature.
+</div>
+
+> **Pre-release project.** No GitHub releases are published yet. Build from source while v0.1.0 is prepared.
 
 ## Features
 
-- Browse and filter font families by category, weight, style, variable support, favorites, and install state.
-- Preview typography with editable copy, presets, weights, spacing, leading, italics, and side-by-side comparison.
-- Scan installed fonts, find duplicates, and inspect font metadata and paths.
-- Import local `.ttf` and `.otf` files into Fontsequal's managed user folder.
-- Install selected font variants to a per-user Fontsequal folder.
-- Create collections and favorites for project-specific font shortlists.
-- Keep settings and library data in local SQLite storage.
+| Browse and preview | Local library | Safe management |
+| --- | --- | --- |
+| Search and filter font families | Scan TTF/OTF metadata and hashes | User-scope managed installs only |
+| Typography lab with presets and comparison | Detect duplicate files | Managed-only uninstall protection |
+| Google Fonts cache and previews | Import local font copies | Linux Fontconfig cache refresh |
+| Favorites and collections | Filter system, external, and managed fonts | SQLite-backed local settings |
 
 ## Safety first
 
-Fontsequal is designed to leave system font management alone.
+Fontsequal is built around ownership boundaries.
 
-- Installs and imports use Fontsequal-managed per-user folders only.
-- System-wide installation is not included in this MVP.
-- Fontsequal never overwrites source files or managed font files.
-- Fontsequal only uninstalls fonts it manages; external and system fonts cannot be deleted from the app.
-- No cloud sync or remote account is required. Cloud sync is planned for a later release.
+- It installs only into Fontsequal-managed **user** font folders.
+- System-wide font installation is **not included in the MVP**.
+- It copies imported fonts; it never moves original files.
+- Fontsequal only uninstalls fonts it manages.
+- System and external fonts are read-only in Fontsequal.
+- Data stays local. Cloud sync is planned for a later release.
 
-Managed locations:
+## Quick start
+
+Arch Linux example:
+
+```bash
+sudo pacman -S --needed bun rustup base-devel webkit2gtk-4.1 gtk3 libappindicator-gtk3 librsvg fontconfig
+rustup default stable
+
+git clone https://github.com/fontsequal/fontsequal.git
+cd fontsequal
+bun install
+bun run tauri:dev
+```
+
+Managed fonts live at:
 
 - Linux: `~/.local/share/fonts/fontsequal`
 - Windows: `%LOCALAPPDATA%\Fontsequal\fonts`
 
-## Installation
+## Build from source
 
-Prebuilt v0.1.0 packages for Windows and Linux will be published on the project releases page. Until then, build from source using the development setup below.
-
-Linux requires Fontconfig so Fontsequal can refresh the user font cache with `fc-cache`.
-
-## Development
-
-Requirements:
-
-- Bun
-- Rust stable toolchain
-- Tauri 2 platform dependencies
-- Linux: Fontconfig (`fc-cache`)
+Requirements: Bun, Rust stable, and Tauri platform dependencies.
 
 ```bash
 bun install
-bun run tauri dev
-```
-
-Useful checks:
-
-```bash
 bun run typecheck
 bun run lint
 bun run test
-cargo test --manifest-path src-tauri/Cargo.toml
+bun run tauri:build
 ```
 
-Build a release package:
+## Why Fontsequal?
 
-```bash
-bun run tauri build
-```
-
-## MVP status
-
-v0.1.0 focuses on safe local font management: browsing, previews, installed-font scanning, managed import/install/uninstall, favorites, collections, and settings. Windows and Linux packaging is configured; validate release artifacts on each target OS before publishing.
+| | Fontsequal | Typical system font folders | Cloud font services |
+| --- | --- | --- | --- |
+| Local-first library | Yes | Partial | Usually no |
+| Safe managed uninstall | Yes | Manual and risky | Varies |
+| System font protection | Yes | No ownership context | Varies |
+| Typography comparison tools | Yes | No | Varies |
+| Cloud sync | Planned | No | Usually yes |
 
 ## Roadmap
 
-- Improve Google Fonts catalog and cache controls.
-- Expand font metadata and duplicate-management tools.
-- Add richer collection workflows and export options.
-- Add cloud sync as an opt-in future capability.
-- Broaden platform coverage after Windows and Linux stabilization.
+- [x] Local scanning, import, managed install, and safe uninstall
+- [x] Google Fonts cache, previews, favorites, collections, and settings
+- [x] Windows and Linux build targets
+- [ ] Published installers and signed release artifacts
+- [ ] Provider-neutral unified font index
+- [ ] Optional cloud sync, with explicit opt-in
 
 ## Contributing
 
-Contributions, bug reports, and font-install edge cases are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request, and use the issue templates for reproducible reports.
+Contributions welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Use Bun only for frontend tooling and keep all font operations local and user-scoped.
+
+## Security
+
+Report vulnerabilities privately. See [SECURITY.md](SECURITY.md). Never include API keys or personal file paths in public reports.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Fontsequal is released under the [MIT License](LICENSE).

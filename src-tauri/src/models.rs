@@ -125,6 +125,49 @@ pub struct FontFamily {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum FontProviderKind { System, Managed, Remote }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FontSourceBadge {
+    pub provider_id: String,
+    pub label: String,
+    pub kind: FontProviderKind,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UnifiedFont {
+    pub id: String,
+    pub family: String,
+    pub normalized_family: String,
+    pub category: FontCategory,
+    pub variants: Vec<FontVariant>,
+    pub files: Vec<FontFile>,
+    pub metadata: Option<FontMetadata>,
+    pub sources: Vec<FontSourceBadge>,
+    pub is_favorite: bool,
+    pub is_installed: bool,
+    pub is_managed: bool,
+    pub is_readonly: bool,
+}
+
+impl UnifiedFont {
+    pub fn from_family(font: FontFamily) -> Self {
+        let (provider_id, label, kind, is_managed, is_readonly) = match font.source {
+            FontSource::Google => ("google".to_string(), "Google".to_string(), FontProviderKind::Remote, false, false),
+            FontSource::LocalImport => ("managed".to_string(), "Managed".to_string(), FontProviderKind::Managed, true, false),
+            FontSource::System => ("system".to_string(), "System".to_string(), FontProviderKind::System, false, true),
+            FontSource::Local => ("system".to_string(), "System".to_string(), FontProviderKind::System, false, true),
+        };
+        Self { id: font.id, normalized_family: normalize_family_name(&font.family), family: font.family, category: font.category, variants: font.variants, files: font.files, metadata: font.metadata, sources: vec![FontSourceBadge { provider_id, label, kind }], is_favorite: font.is_favorite, is_installed: font.is_installed, is_managed, is_readonly }
+    }
+}
+
+pub fn normalize_family_name(value: &str) -> String { value.trim().to_lowercase().split_whitespace().collect::<Vec<_>>().join(" ") }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InstalledFont {
     pub id: String,

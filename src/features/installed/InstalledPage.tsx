@@ -117,7 +117,10 @@ export function InstalledPage() {
             <div className="mt-4 space-y-2">
               {fontsQuery.isLoading ? <InstalledSkeletons /> : null}
               {!fontsQuery.isLoading && fonts.length === 0 ? <p className="px-2 py-8 text-center text-sm text-muted-foreground">No matching installed fonts.</p> : null}
-              {visibleFonts.map((font) => <FontRow key={font.id} font={font} selected={font.id === selected?.id} checked={batchIds.includes(font.id)} onCheckedChange={(checked) => setBatchIds((current) => checked ? [...current, font.id] : current.filter((id) => id !== font.id))} onSelect={() => setSelectedId(font.id)} />)}
+              <FontSection title="Managed by Fontsequal" fonts={visibleFonts.filter((font) => font.isManaged)} selected={selected?.id} batchIds={batchIds} setBatchIds={setBatchIds} setSelectedId={setSelectedId} />
+              <FontSection title="System fonts" fonts={visibleFonts.filter((font) => !font.isManaged && font.source === "system")} selected={selected?.id} batchIds={batchIds} setBatchIds={setBatchIds} setSelectedId={setSelectedId} />
+              <FontSection title="External user fonts" fonts={visibleFonts.filter((font) => !font.isManaged && font.source !== "system")} selected={selected?.id} batchIds={batchIds} setBatchIds={setBatchIds} setSelectedId={setSelectedId} />
+              <FontSection title="Duplicates" fonts={visibleFonts.filter((font) => font.isDuplicate)} selected={selected?.id} batchIds={batchIds} setBatchIds={setBatchIds} setSelectedId={setSelectedId} />
             </div>
             {fonts.length > visibleFonts.length ? <Button className="mt-3 w-full" variant="glass" onClick={() => setVisibleCount((count) => count + 120)}>Load more ({fonts.length - visibleFonts.length})</Button> : null}
             {batchIds.length ? <Button className="mt-4 w-full" variant="glass" onClick={() => setPendingUninstall(fonts.filter((font) => batchIds.includes(font.id) && font.isManaged))}>Review uninstall ({batchIds.length})</Button> : null}
@@ -150,6 +153,8 @@ function FontRow({ font, selected, checked, onCheckedChange, onSelect }: { font:
     </div>
   );
 }
+
+function FontSection({ title, fonts, selected, batchIds, setBatchIds, setSelectedId }: { title: string; fonts: InstalledFont[]; selected?: string; batchIds: string[]; setBatchIds: React.Dispatch<React.SetStateAction<string[]>>; setSelectedId: (id: string) => void }) { if (!fonts.length) return null; return <div className="space-y-2"><p className="px-1 pt-3 text-[10px] font-medium uppercase tracking-[.16em] text-muted-foreground">{title} · {fonts.length}</p>{fonts.map((font) => <FontRow key={`${title}-${font.id}`} font={font} selected={font.id === selected} checked={batchIds.includes(font.id)} onCheckedChange={(checked) => setBatchIds((current) => checked ? [...current, font.id] : current.filter((id) => id !== font.id))} onSelect={() => setSelectedId(font.id)} />)}</div>; }
 
 function FontDetails({ font, onUninstall }: { font?: InstalledFont; onUninstall: (font: InstalledFont) => void }) {
   if (!font) {
