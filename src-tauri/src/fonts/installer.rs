@@ -15,7 +15,7 @@ pub fn install_font(family: &FontFamily, variant_ids: Option<&[String]>) -> AppR
     let mut skipped_files = Vec::new();
 
     for variant_id in variants {
-        let source = family.files.iter().find(|file| file.variant_id.as_deref() == Some(variant_id.as_str()))
+        let source = family.files.iter().find(|file| file.variant_id.as_deref() == Some(variant_id))
             .ok_or_else(|| AppError::new("font_file_missing", format!("Missing file for variant {variant_id}.")))?;
         let bytes = download_font_file(source)?;
         validate_font_file(&bytes).map_err(|message| AppError::new("invalid_font", message))?;
@@ -91,7 +91,7 @@ pub fn managed_font_directory() -> AppResult<PathBuf> {
 }
 
 fn select_variants<'a>(family: &'a FontFamily, selected: Option<&'a [String]>) -> AppResult<Vec<&'a str>> {
-    let ids = selected.map(|ids| ids.iter().map(String::as_str).collect()).unwrap_or_else(|| family.variants.iter().map(|variant| variant.id.as_str()).collect());
+    let ids: Vec<&str> = selected.map(|ids| ids.iter().map(|id| id.as_str()).collect()).unwrap_or_else(|| family.variants.iter().map(|variant| variant.id.as_str()).collect());
     if ids.is_empty() { return Err(AppError::new("no_variants", "Choose at least one font variant.")); }
     Ok(ids)
 }

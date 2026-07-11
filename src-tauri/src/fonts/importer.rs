@@ -1,5 +1,5 @@
 use crate::{error::{AppError, AppResult}, fonts::{hash::sha256_file, installer, normalizer::{as_family, normalize_scanned_font}, parser::parse_font}, models::{FontFile, FontFileFormat, FontSource, InstalledFont}};
-use std::{collections::HashSet, fs::{self, OpenOptions}, io::Write, path::{Path, PathBuf}};
+use std::{collections::HashSet, fs::{self, OpenOptions}, io::Write, path::Path};
 
 pub fn import_local_fonts(paths: &[String], known_hashes: &HashSet<String>) -> AppResult<(Vec<InstalledFont>, Vec<FontFile>)> {
     let directory = installer::managed_font_directory()?;

@@ -26,6 +26,7 @@
   "bundle": {
     "active": true,
     "targets": ["deb", "appimage", "nsis", "msi"],
+    "icon": ["icons/icon.png"],
     "windows": {
       "digestAlgorithm": "sha256"
     },

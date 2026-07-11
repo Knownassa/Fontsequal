@@ -3,7 +3,7 @@ use crate::{
     models::{
         mock_collections, mock_google_fonts, mock_installed_fonts, mock_settings, AppSettings,
         Collection, CreateCollectionInput, FontCategory, FontFamily, FontFile, FontFileFormat,
-        FontMetadata, FontSource, FontStyle, FontVariant, InstallScope, InstalledFont,
+        FontSource, FontStyle, FontVariant, InstallScope, InstalledFont,
         UpdateSettingsInput,
     },
 };
@@ -48,7 +48,7 @@ pub fn list_font_families(connection: &Connection) -> AppResult<Vec<FontFamily>>
     )?;
 
     let rows = statement.query_map([], |row| read_font_family_row(connection, row))?;
-    collect_rows(rows)
+    Ok(collect_rows(rows)?)
 }
 
 pub fn search_font_families(
@@ -256,7 +256,7 @@ pub fn list_installed_fonts(connection: &Connection) -> AppResult<Vec<InstalledF
         })
     })?;
 
-    collect_rows(rows)
+    Ok(collect_rows(rows)?)
 }
 
 pub fn upsert_installed_font(
@@ -363,7 +363,7 @@ pub fn list_collections(connection: &Connection) -> AppResult<Vec<Collection>> {
         })
     })?;
 
-    collect_rows(rows)
+    Ok(collect_rows(rows)?)
 }
 
 pub fn create_collection(
@@ -470,7 +470,7 @@ pub fn get_settings(connection: &Connection) -> AppResult<AppSettings> {
         .optional()?;
 
     match value_json {
-        Some(value_json) => from_json(&value_json),
+        Some(value_json) => Ok(from_json(&value_json)?),
         None => {
             let settings = mock_settings();
             upsert_settings(connection, &settings)?;

@@ -17,6 +17,7 @@ use commands::{
     settings::{get_settings, update_settings},
 };
 use db::DbState;
+use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
