@@ -1,0 +1,105 @@
+name: Draft signed release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish-tauri:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    environment: production-release
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux x86_64
+            os: ubuntu-22.04
+            rust_target: ""
+            args: ""
+          - name: Windows x86_64
+            os: windows-latest
+            rust_target: ""
+            args: ""
+          - name: macOS x86_64
+            os: macos-latest
+            rust_target: x86_64-apple-darwin
+            args: --target x86_64-apple-darwin
+          - name: macOS aarch64
+            os: macos-latest
+            rust_target: aarch64-apple-darwin
+            args: --target aarch64-apple-darwin
+    steps:
+      # Pin every third-party action below to a reviewed full commit SHA before merging.
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.rust_target }}
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: ./src-tauri -> target
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+      - run: bun install --frozen-lockfile
+      - name: Build, sign, and upload draft assets
+        uses: tauri-apps/tauri-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Fontsequal ${{ github.ref_name }}
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
+      - name: Verify generated updater signatures
+        shell: bash
+        run: |
+          set -euo pipefail
+          count=0
+          while IFS= read -r -d '' artifact; do
+            count=$((count + 1))
+            test -s "${artifact}.sig"
+          done < <(find src-tauri/target -type f \( -name '*.AppImage' -o -name '*.app.tar.gz' -o -name '*.exe' -o -name '*.msi' \) -print0)
+          test "$count" -gt 0
+
+  verify-release-metadata:
+    needs: publish-tauri
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Validate the draft updater metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          mkdir release-metadata
+          gh release download "$TAG" --pattern latest.json --dir release-metadata --clobber
+          latest_json=release-metadata/latest.json
+          test -s "$latest_json"
+          version="${TAG#v}"
+          jq -e --arg version "$version" '.version == $version' "$latest_json"
+          prefix="https://github.com/Knownassa/Fontsequal/releases/download/${TAG}/"
+          for platform in linux-x86_64 windows-x86_64 darwin-x86_64 darwin-aarch64; do
+            jq -e --arg platform "$platform" '
+              .platforms[$platform].signature | type == "string" and length > 0
+            ' "$latest_json"
+            jq -e --arg platform "$platform" --arg prefix "$prefix" '
+              .platforms[$platform].url | type == "string" and startswith($prefix)
+            ' "$latest_json"
+          done

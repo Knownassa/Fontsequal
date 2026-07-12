@@ -1,7 +1,9 @@
 use crate::{
     db::{repositories, DbState},
     error::AppResult,
-    models::{ApiResult, Collection, CreateCollectionInput, FontCollectionInput, RenameCollectionInput},
+    models::{
+        ApiResult, Collection, CreateCollectionInput, FontCollectionInput, RenameCollectionInput,
+    },
 };
 use tauri::State;
 
@@ -12,13 +14,24 @@ pub fn list_collections(db: State<'_, DbState>) -> AppResult<ApiResult<Vec<Colle
 }
 
 #[tauri::command]
-pub fn rename_collection(db: State<'_, DbState>, input: RenameCollectionInput) -> AppResult<ApiResult<Collection>> {
+pub fn rename_collection(
+    db: State<'_, DbState>,
+    input: RenameCollectionInput,
+) -> AppResult<ApiResult<Collection>> {
     let connection = db.connection()?;
-    Ok(ApiResult::ok(repositories::rename_collection(&connection, &input.collection_id, &input.name, input.description)?))
+    Ok(ApiResult::ok(repositories::rename_collection(
+        &connection,
+        &input.collection_id,
+        &input.name,
+        input.description,
+    )?))
 }
 
 #[tauri::command]
-pub fn delete_collection(db: State<'_, DbState>, collection_id: String) -> AppResult<ApiResult<()>> {
+pub fn delete_collection(
+    db: State<'_, DbState>,
+    collection_id: String,
+) -> AppResult<ApiResult<()>> {
     let connection = db.connection()?;
     repositories::delete_collection(&connection, &collection_id)?;
     Ok(ApiResult::ok(()))

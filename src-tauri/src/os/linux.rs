@@ -1,5 +1,9 @@
 use crate::error::{AppError, AppResult};
-use std::{env, path::{Path, PathBuf}, process::Command};
+use std::{
+    env,
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 pub fn font_locations() -> Vec<(PathBuf, bool)> {
     let home = env::var_os("HOME").map(PathBuf::from);
@@ -22,11 +26,23 @@ pub fn platform_name() -> &'static str {
 }
 
 pub fn managed_font_directory() -> AppResult<PathBuf> {
-    let home = env::var_os("HOME").ok_or_else(|| AppError::new("home_missing", "HOME is required for user font installation."))?;
+    let home = env::var_os("HOME").ok_or_else(|| {
+        AppError::new(
+            "home_missing",
+            "HOME is required for user font installation.",
+        )
+    })?;
     Ok(PathBuf::from(home).join(".local/share/fonts/fontsequal"))
 }
 
 pub fn refresh_font_cache(directory: &Path) -> AppResult<()> {
     let status = Command::new("fc-cache").arg(directory).status()?;
-    if status.success() { Ok(()) } else { Err(AppError::new("font_cache_failed", "fc-cache could not refresh Fontsequal font cache.")) }
+    if status.success() {
+        Ok(())
+    } else {
+        Err(AppError::new(
+            "font_cache_failed",
+            "fc-cache could not refresh Fontsequal font cache.",
+        ))
+    }
 }

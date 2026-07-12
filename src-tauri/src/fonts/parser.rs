@@ -17,7 +17,9 @@ pub fn parse_font(path: &Path) -> Result<ParsedFont, String> {
 }
 
 pub fn validate_font_file(bytes: &[u8]) -> Result<(), String> {
-    Face::parse(bytes, 0).map(|_| ()).map_err(|error| error.to_string())
+    Face::parse(bytes, 0)
+        .map(|_| ())
+        .map_err(|error| error.to_string())
 }
 
 pub fn parse_font_bytes(bytes: &[u8], path: &Path) -> Result<ParsedFont, String> {
@@ -27,7 +29,11 @@ pub fn parse_font_bytes(bytes: &[u8], path: &Path) -> Result<ParsedFont, String>
         .unwrap_or_else(|| fallback_family(path));
     let full_name = name(&face, name_id::FULL_NAME);
     let post_script_name = name(&face, name_id::POST_SCRIPT_NAME);
-    let style = if face.is_italic() { FontStyle::Italic } else { FontStyle::Normal };
+    let style = if face.is_italic() {
+        FontStyle::Italic
+    } else {
+        FontStyle::Normal
+    };
 
     Ok(ParsedFont {
         family,

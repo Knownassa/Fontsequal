@@ -1,6 +1,6 @@
 pub mod hash;
-pub mod installer;
 pub mod importer;
+pub mod installer;
 pub mod normalizer;
 pub mod parser;
 pub mod scanner;

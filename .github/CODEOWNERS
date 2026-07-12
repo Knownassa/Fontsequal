@@ -1,0 +1,9 @@
+# CODEOWNERS only takes effect when branch or ruleset settings require code-owner review.
+/.github/workflows/ @Knownassa
+/src-tauri/tauri.conf.json @Knownassa
+/src-tauri/capabilities/ @Knownassa
+/src-tauri/Cargo.toml @Knownassa
+/src-tauri/Cargo.lock @Knownassa
+/package.json @Knownassa
+/bun.lock @Knownassa
+/src/features/updater/ @Knownassa

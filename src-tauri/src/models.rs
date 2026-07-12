@@ -126,7 +126,11 @@ pub struct FontFamily {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
-pub enum FontProviderKind { System, Managed, Remote }
+pub enum FontProviderKind {
+    System,
+    Managed,
+    Remote,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -156,16 +160,64 @@ pub struct UnifiedFont {
 impl UnifiedFont {
     pub fn from_family(font: FontFamily) -> Self {
         let (provider_id, label, kind, is_managed, is_readonly) = match font.source {
-            FontSource::Google => ("google".to_string(), "Google".to_string(), FontProviderKind::Remote, false, false),
-            FontSource::LocalImport => ("managed".to_string(), "Managed".to_string(), FontProviderKind::Managed, true, false),
-            FontSource::System => ("system".to_string(), "System".to_string(), FontProviderKind::System, false, true),
-            FontSource::Local => ("system".to_string(), "System".to_string(), FontProviderKind::System, false, true),
+            FontSource::Google => (
+                "google".to_string(),
+                "Google".to_string(),
+                FontProviderKind::Remote,
+                false,
+                false,
+            ),
+            FontSource::LocalImport => (
+                "managed".to_string(),
+                "Managed".to_string(),
+                FontProviderKind::Managed,
+                true,
+                false,
+            ),
+            FontSource::System => (
+                "system".to_string(),
+                "System".to_string(),
+                FontProviderKind::System,
+                false,
+                true,
+            ),
+            FontSource::Local => (
+                "system".to_string(),
+                "System".to_string(),
+                FontProviderKind::System,
+                false,
+                true,
+            ),
         };
-        Self { id: font.id, normalized_family: normalize_family_name(&font.family), family: font.family, category: font.category, variants: font.variants, files: font.files, metadata: font.metadata, sources: vec![FontSourceBadge { provider_id, label, kind }], is_favorite: font.is_favorite, is_installed: font.is_installed, is_managed, is_readonly }
+        Self {
+            id: font.id,
+            normalized_family: normalize_family_name(&font.family),
+            family: font.family,
+            category: font.category,
+            variants: font.variants,
+            files: font.files,
+            metadata: font.metadata,
+            sources: vec![FontSourceBadge {
+                provider_id,
+                label,
+                kind,
+            }],
+            is_favorite: font.is_favorite,
+            is_installed: font.is_installed,
+            is_managed,
+            is_readonly,
+        }
     }
 }
 
-pub fn normalize_family_name(value: &str) -> String { value.trim().to_lowercase().split_whitespace().collect::<Vec<_>>().join(" ") }
+pub fn normalize_family_name(value: &str) -> String {
+    value
+        .trim()
+        .to_lowercase()
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
