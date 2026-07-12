@@ -2,9 +2,8 @@ use crate::{
     db::{repositories, DbState},
     error::AppResult,
     models::{
-        mock_font_family, ApiResult, FontCategory, FontFamily,
-        InstallFontInput, InstallResult, ToggleFavoriteInput, UninstallFontInput,
-        UninstallResult,
+        mock_font_family, ApiResult, FontCategory, FontFamily, InstallFontInput, InstallResult,
+        ToggleFavoriteInput, UninstallFontInput, UninstallResult,
     },
 };
 use tauri::State;
@@ -16,10 +15,15 @@ pub fn install_font(
 ) -> AppResult<ApiResult<InstallResult>> {
     let connection = db.connection()?;
     if !matches!(&input.scope, crate::models::InstallScope::User) {
-        return Err(crate::error::AppError::new("system_install_unsupported", "Fontsequal installs fonts for current user only."));
+        return Err(crate::error::AppError::new(
+            "system_install_unsupported",
+            "Fontsequal installs fonts for current user only.",
+        ));
     }
-    let family = repositories::get_font_family(&connection, &input.family_id)?
-        .ok_or_else(|| crate::error::AppError::new("font_not_found", "Font family was not found."))?;
+    let family =
+        repositories::get_font_family(&connection, &input.family_id)?.ok_or_else(|| {
+            crate::error::AppError::new("font_not_found", "Font family was not found.")
+        })?;
     let result = crate::fonts::installer::install_font(&family, input.variant_ids.as_deref())?;
 
     for file in &result.installed_files {
@@ -39,8 +43,14 @@ pub fn uninstall_font(
     input: UninstallFontInput,
 ) -> AppResult<ApiResult<UninstallResult>> {
     let connection = db.connection()?;
-    if matches!(input.scope.as_ref(), Some(crate::models::InstallScope::System)) {
-        return Err(crate::error::AppError::new("system_uninstall_unsupported", "Fontsequal removes managed user fonts only."));
+    if matches!(
+        input.scope.as_ref(),
+        Some(crate::models::InstallScope::System)
+    ) {
+        return Err(crate::error::AppError::new(
+            "system_uninstall_unsupported",
+            "Fontsequal removes managed user fonts only.",
+        ));
     }
     let mut managed_files = repositories::list_installed_fonts(&connection)?
         .into_iter()
@@ -51,7 +61,10 @@ pub fn uninstall_font(
     managed_files.sort_by(|left, right| left.id.cmp(&right.id));
     managed_files.dedup_by(|left, right| left.id == right.id);
     if managed_files.is_empty() {
-        return Err(crate::error::AppError::new("external_font_protected", "External and system fonts cannot be uninstalled from Fontsequal."));
+        return Err(crate::error::AppError::new(
+            "external_font_protected",
+            "External and system fonts cannot be uninstalled from Fontsequal.",
+        ));
     }
     let removed_files = crate::fonts::uninstaller::uninstall_managed_files(&managed_files)?;
     // DB mutation follows successful file removal and cache refresh only.

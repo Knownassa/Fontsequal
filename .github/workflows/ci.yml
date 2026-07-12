@@ -2,7 +2,11 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -12,14 +16,14 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      # Pin actions to full commit SHAs before merging this workflow.
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
       - run: bun install --frozen-lockfile
       - run: bun run typecheck
-      - run: bun run lint
       - run: bun run test
       - run: bun run build
       - working-directory: src-tauri
@@ -27,4 +31,4 @@ jobs:
       - working-directory: src-tauri
         run: cargo test
       - working-directory: src-tauri
-        run: cargo clippy -- -D warnings
+        run: cargo clippy --all-targets

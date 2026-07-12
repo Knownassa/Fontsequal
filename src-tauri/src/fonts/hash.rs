@@ -1,5 +1,9 @@
 use sha2::{Digest, Sha256};
-use std::{fs::File, io::{BufReader, Read}, path::Path};
+use std::{
+    fs::File,
+    io::{BufReader, Read},
+    path::Path,
+};
 
 pub fn sha256_file(path: &Path) -> std::io::Result<String> {
     let file = File::open(path)?;
@@ -9,7 +13,9 @@ pub fn sha256_file(path: &Path) -> std::io::Result<String> {
 
     loop {
         let bytes_read = reader.read(&mut buffer)?;
-        if bytes_read == 0 { break; }
+        if bytes_read == 0 {
+            break;
+        }
         hasher.update(&buffer[..bytes_read]);
     }
 
@@ -28,6 +34,9 @@ mod tests {
 
     #[test]
     fn generates_stable_sha256() {
-        assert_eq!(sha256_bytes(b"fontsequal"), "efce5ca6e4aecba23fcfa671cc3eeb867703d099492a41827aa0fd51a85b754e");
+        assert_eq!(
+            sha256_bytes(b"fontsequal"),
+            "efce5ca6e4aecba23fcfa671cc3eeb867703d099492a41827aa0fd51a85b754e"
+        );
     }
 }

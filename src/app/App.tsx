@@ -5,7 +5,10 @@ import {
   Navigate,
   RouterProvider,
 } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { isTauri } from "@tauri-apps/api/core";
 import { Toaster } from "@/components/ui/sonner";
+import { UpdateDialog, useUpdaterStore } from "@/features/updater";
 import { BrowsePage } from "../features/browse/BrowsePage";
 import { CollectionsPage } from "../features/collections/CollectionsPage";
 import { InstalledPage } from "../features/installed/InstalledPage";
@@ -17,10 +20,30 @@ const rootRoute = createRootRoute({
   component: () => (
     <>
       <AppShell />
+      <UpdaterBootstrap />
+      <UpdateDialog />
       <Toaster />
     </>
   ),
 });
+
+function UpdaterBootstrap() {
+  const checkForUpdates = useUpdaterStore((state) => state.checkForUpdates);
+  const loadCurrentVersion = useUpdaterStore((state) => state.loadCurrentVersion);
+
+  useEffect(() => {
+    if (!isTauri()) return;
+
+    void loadCurrentVersion();
+    const timeoutId = window.setTimeout(() => {
+      void checkForUpdates({ openDialogOnAvailable: false });
+    }, 7_000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [checkForUpdates, loadCurrentVersion]);
+
+  return null;
+}
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,

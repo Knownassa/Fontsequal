@@ -9,14 +9,17 @@ mod providers;
 
 use commands::{
     collections::{
-        add_font_to_collection, create_collection, delete_collection, list_collections, remove_font_from_collection, rename_collection,
+        add_font_to_collection, create_collection, delete_collection, list_collections,
+        remove_font_from_collection, rename_collection,
     },
     fonts::{install_font, toggle_favorite, uninstall_font},
     google_fonts::{list_google_fonts, refresh_google_fonts_cache, search_google_fonts},
     import_fonts::import_local_fonts,
     installed::{get_installed_fonts, scan_system_fonts},
     settings::{get_settings, update_settings},
-    unified_fonts::{list_unified_fonts, refresh_all_font_sources, refresh_font_provider, search_unified_fonts},
+    unified_fonts::{
+        list_unified_fonts, refresh_all_font_sources, refresh_font_provider, search_unified_fonts,
+    },
 };
 use db::DbState;
 use tauri::Manager;
@@ -26,6 +29,13 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
+            #[cfg(desktop)]
+            {
+                app.handle().plugin(tauri_plugin_process::init())?;
+                app.handle()
+                    .plugin(tauri_plugin_updater::Builder::new().build())?;
+            }
+
             let db = DbState::initialize(&app.handle().clone())?;
             app.manage(db);
             Ok(())
@@ -47,11 +57,11 @@ pub fn run() {
             add_font_to_collection,
             remove_font_from_collection,
             get_settings,
-            update_settings
-            ,list_unified_fonts
-            ,search_unified_fonts
-            ,refresh_font_provider
-            ,refresh_all_font_sources
+            update_settings,
+            list_unified_fonts,
+            search_unified_fonts,
+            refresh_font_provider,
+            refresh_all_font_sources
         ])
         .run(tauri::generate_context!())
         .expect("error while running Fontsequal");

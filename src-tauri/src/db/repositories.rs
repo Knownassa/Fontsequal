@@ -3,8 +3,7 @@ use crate::{
     models::{
         mock_collections, mock_google_fonts, mock_installed_fonts, mock_settings, AppSettings,
         Collection, CreateCollectionInput, FontCategory, FontFamily, FontFile, FontFileFormat,
-        FontSource, FontStyle, FontVariant, InstallScope, InstalledFont,
-        UpdateSettingsInput,
+        FontSource, FontStyle, FontVariant, InstallScope, InstalledFont, UpdateSettingsInput,
     },
 };
 use rusqlite::{params, Connection, OptionalExtension};
@@ -410,7 +409,12 @@ pub fn upsert_collection(connection: &Connection, collection: &Collection) -> Ap
     Ok(())
 }
 
-pub fn rename_collection(connection: &Connection, collection_id: &str, name: &str, description: Option<String>) -> AppResult<Collection> {
+pub fn rename_collection(
+    connection: &Connection,
+    collection_id: &str,
+    name: &str,
+    description: Option<String>,
+) -> AppResult<Collection> {
     connection.execute(
         "UPDATE collections SET name = ?1, description = ?2, updated_at = ?3 WHERE id = ?4",
         params![name.trim(), description, MOCK_NOW, collection_id],
@@ -419,8 +423,14 @@ pub fn rename_collection(connection: &Connection, collection_id: &str, name: &st
 }
 
 pub fn delete_collection(connection: &Connection, collection_id: &str) -> AppResult<()> {
-    connection.execute("DELETE FROM collection_fonts WHERE collection_id = ?1", params![collection_id])?;
-    connection.execute("DELETE FROM collections WHERE id = ?1", params![collection_id])?;
+    connection.execute(
+        "DELETE FROM collection_fonts WHERE collection_id = ?1",
+        params![collection_id],
+    )?;
+    connection.execute(
+        "DELETE FROM collections WHERE id = ?1",
+        params![collection_id],
+    )?;
     Ok(())
 }
 

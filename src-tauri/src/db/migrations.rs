@@ -117,10 +117,26 @@ pub fn run_migrations(connection: &Connection) -> AppResult<()> {
         )?;
     }
 
-    let family_provider_exists: bool = connection.prepare("PRAGMA table_info(font_families)")?.query_map([], |row| row.get::<_, String>(1))?.filter_map(Result::ok).any(|column| column == "provider_id");
-    if !family_provider_exists { connection.execute_batch("ALTER TABLE font_families ADD COLUMN provider_id TEXT NOT NULL DEFAULT 'google';")?; }
-    let installed_provider_exists: bool = connection.prepare("PRAGMA table_info(installed_fonts)")?.query_map([], |row| row.get::<_, String>(1))?.filter_map(Result::ok).any(|column| column == "provider_id");
-    if !installed_provider_exists { connection.execute_batch("ALTER TABLE installed_fonts ADD COLUMN provider_id TEXT NOT NULL DEFAULT 'managed';")?; }
+    let family_provider_exists: bool = connection
+        .prepare("PRAGMA table_info(font_families)")?
+        .query_map([], |row| row.get::<_, String>(1))?
+        .filter_map(Result::ok)
+        .any(|column| column == "provider_id");
+    if !family_provider_exists {
+        connection.execute_batch(
+            "ALTER TABLE font_families ADD COLUMN provider_id TEXT NOT NULL DEFAULT 'google';",
+        )?;
+    }
+    let installed_provider_exists: bool = connection
+        .prepare("PRAGMA table_info(installed_fonts)")?
+        .query_map([], |row| row.get::<_, String>(1))?
+        .filter_map(Result::ok)
+        .any(|column| column == "provider_id");
+    if !installed_provider_exists {
+        connection.execute_batch(
+            "ALTER TABLE installed_fonts ADD COLUMN provider_id TEXT NOT NULL DEFAULT 'managed';",
+        )?;
+    }
     connection.execute_batch("INSERT OR IGNORE INTO font_sources (id, label, kind, readonly) VALUES ('system','System','system',1), ('managed','Managed','managed',0), ('google','Google','remote',0), ('bunny','Bunny','remote',0), ('fontsource','Fontsource','remote',0);")?;
 
     connection.pragma_update(None, "user_version", LATEST_SCHEMA_VERSION)?;

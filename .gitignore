@@ -2,6 +2,10 @@ node_modules
 dist
 dist-ssr
 *.local
+*.key
+*.pem
+.env
+.env.*
 .tmp
 
 src-tauri/target
