@@ -134,6 +134,7 @@ export const useUpdaterStore = create<UpdaterState>((set, get) => ({
       const normalized = normalizeUpdaterError(error);
       if (import.meta.env.DEV) console.warn("[updater] relaunch failed", normalized.diagnostic);
       set({ status: "error", error: normalized });
+    } finally {
       operationInFlight = false;
     }
   },
