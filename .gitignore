@@ -11,5 +11,6 @@ dist-ssr
 src-tauri/target
 src-tauri/gen
 src-tauri/icons/*.png
+!src-tauri/icons/icon.png
 src-tauri/icons/*.ico
 src-tauri/icons/*.icns
